@@ -28,7 +28,7 @@ public class Contact {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "surName")
+	@Column(name = "surname")
 	private String surName;
 
 	@Column(name = "mail")
