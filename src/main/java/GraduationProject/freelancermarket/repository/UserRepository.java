@@ -6,4 +6,6 @@ import GraduationProject.freelancermarket.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	User findByEmail(String email);
+
 }

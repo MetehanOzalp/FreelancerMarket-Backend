@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,12 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import GraduationProject.freelancermarket.model.enums.WalletTransactionTypeEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @Table(name = "wallet_transactions")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,8 +35,9 @@ public class WalletTransaction {
 	@Column(name = "user_id")
 	private int userId;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "transaction_name")
-	private String transactionName;
+	private WalletTransactionTypeEnum transactionName;
 
 	@Column(name = "amount")
 	private Double amount;

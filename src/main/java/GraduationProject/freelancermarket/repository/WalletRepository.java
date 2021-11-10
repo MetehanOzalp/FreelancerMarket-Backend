@@ -6,4 +6,6 @@ import GraduationProject.freelancermarket.entities.Wallet;
 
 public interface WalletRepository extends JpaRepository<Wallet, Integer> {
 
+	Wallet findByUserId(int id);
+
 }

@@ -30,7 +30,7 @@ public class Advert {
 	private int id;
 
 	@Column(name = "freelancer_id")
-	private int freelanceId;
+	private int freelancerId;
 
 	@Column(name = "sub_category_id")
 	private int subCategoryId;
