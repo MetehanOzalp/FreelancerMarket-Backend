@@ -3,12 +3,13 @@ package GraduationProject.freelancermarket.service.abstracts;
 import java.util.List;
 
 import GraduationProject.freelancermarket.entities.SubCategory;
+import GraduationProject.freelancermarket.model.dto.SubCategoryAddDto;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.Result;
 
 public interface SubCategoryService {
 
-	Result add(SubCategory subCategory);
+	Result add(SubCategoryAddDto subCategoryAddDto);
 
 	Result delete(int id);
 

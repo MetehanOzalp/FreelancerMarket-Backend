@@ -2,9 +2,11 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.SubCategory;
+import GraduationProject.freelancermarket.model.dto.SubCategoryAddDto;
 import GraduationProject.freelancermarket.repository.SubCategoryRepository;
 import GraduationProject.freelancermarket.service.abstracts.SubCategoryService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -18,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class SubCategoryManager implements SubCategoryService {
 
 	private final SubCategoryRepository subCategoryRepository;
+	private final ModelMapper modelMapper;
 
 	@Override
-	public Result add(SubCategory subCategory) {
+	public Result add(SubCategoryAddDto subCategoryAddDto) {
+		SubCategory subCategory = modelMapper.map(subCategoryAddDto, SubCategory.class);
 		subCategoryRepository.save(subCategory);
 		return new SuccessResult("Alt kategori eklendi");
 	}

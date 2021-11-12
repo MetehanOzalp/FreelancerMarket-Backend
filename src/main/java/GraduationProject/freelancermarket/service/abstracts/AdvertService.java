@@ -3,12 +3,13 @@ package GraduationProject.freelancermarket.service.abstracts;
 import java.util.List;
 
 import GraduationProject.freelancermarket.entities.Advert;
+import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.Result;
 
 public interface AdvertService {
 
-	Result add(Advert advert);
+	Result add(AdvertAddDto advertAddDto);
 
 	Result delete(int id);
 

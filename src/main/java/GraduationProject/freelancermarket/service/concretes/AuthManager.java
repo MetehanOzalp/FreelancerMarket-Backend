@@ -53,7 +53,7 @@ public class AuthManager implements AuthService {
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
-		freelancerForRegisterDto.setEmail(imagePath);
+		freelancerForRegisterDto.setImagePath(imagePath);
 		Freelancer freelancer = modelMapper.map(freelancerForRegisterDto, Freelancer.class);
 		var added = freelancerService.add(freelancer);
 		if (!added.isSuccess()) {
@@ -66,8 +66,8 @@ public class AuthManager implements AuthService {
 
 	public Result checkIfUserExists(String email) {
 		var result = userService.getByMail(email);
-		if (!result.isSuccess()) {
-			return new ErrorResult(result.getMessage());
+		if (result.getData() != null) {
+			return new ErrorResult("Kullanıcı zaten mevcut");
 		}
 		return new SuccessResult();
 	}

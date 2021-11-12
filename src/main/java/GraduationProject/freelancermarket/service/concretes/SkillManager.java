@@ -2,9 +2,11 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.Skill;
+import GraduationProject.freelancermarket.model.dto.SkillAddDto;
 import GraduationProject.freelancermarket.repository.SkillRepository;
 import GraduationProject.freelancermarket.service.abstracts.SkillService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -18,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class SkillManager implements SkillService {
 
 	private final SkillRepository skillRepository;
+	private final ModelMapper modelMapper;
 
 	@Override
-	public Result add(Skill skill) {
+	public Result add(SkillAddDto skillAddDto) {
+		Skill skill = modelMapper.map(skillAddDto, Skill.class);
 		skillRepository.save(skill);
 		return new SuccessResult("Yetenek eklendi");
 	}

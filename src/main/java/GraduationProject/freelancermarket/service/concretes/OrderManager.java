@@ -2,11 +2,14 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Order;
+import GraduationProject.freelancermarket.model.dto.OrderAddDto;
 import GraduationProject.freelancermarket.repository.OrderRepository;
+import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
 import GraduationProject.freelancermarket.service.abstracts.OrderService;
@@ -26,17 +29,20 @@ public class OrderManager implements OrderService {
 	private final EmployerService employerService;
 	private final FreelancerService freelancerService;
 	private final WalletService walletService;
+	private final AdvertService advertService;
+	private final ModelMapper modelMapper;
 
 	@Override
-	public Result add(Order order) {
-		var employer = employerService.getById(order.getEmployerId());
+	public Result add(OrderAddDto orderAddDto) {
+		var employer = employerService.getById(orderAddDto.getEmployerId());
 		if (employer.getData() == null) {
 			return new ErrorResult("İşveren bulunamadı");
 		}
-		var result = BusinessRules.run(checkIfEnoughBalance(order.getEmployerId(), order.getAdvert().getPrice()));
+		var result = BusinessRules.run(checkIfEnoughBalance(orderAddDto.getEmployerId(), orderAddDto.getAdvertId()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
+		Order order = modelMapper.map(orderAddDto, Order.class);
 		order.setStatus(false);
 		orderRepository.save(order);
 		var withdraw = walletService.moneyWithdraw(order.getEmployerId(), order.getAdvert().getPrice());
@@ -82,12 +88,16 @@ public class OrderManager implements OrderService {
 		return new SuccessDataResult<List<Order>>(orderRepository.findAll(), "Siparişler listelendi");
 	}
 
-	public Result checkIfEnoughBalance(int userId, Double amount) {
+	public Result checkIfEnoughBalance(int userId, int advertId) {
 		var wallet = walletService.getByUserId(userId);
 		if (wallet.getData() == null || !wallet.isSuccess()) {
 			return new ErrorResult(wallet.getMessage());
 		}
-		if (wallet.getData().getBalance() < amount) {
+		var advert = advertService.getById(advertId);
+		if (advert.getData() == null || !advert.isSuccess()) {
+			return new ErrorResult(wallet.getMessage());
+		}
+		if (wallet.getData().getBalance() < advert.getData().getPrice()) {
 			return new ErrorResult("Yetersiz bakiye");
 		}
 		return new SuccessResult();

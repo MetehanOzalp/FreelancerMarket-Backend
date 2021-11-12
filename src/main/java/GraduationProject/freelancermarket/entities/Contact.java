@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,18 +27,28 @@ public class Contact {
 	@Column(name = "id")
 	private int id;
 
+	@NotNull
+	@NotBlank(message = "İsim alanı boş bırakılamaz")
 	@Column(name = "name")
 	private String name;
 
+	@NotNull
+	@NotBlank(message = "Soyisim alanı boş bırakılamaz")
 	@Column(name = "surname")
 	private String surName;
 
+	@NotNull
+	@NotBlank(message = "Mail alanı boş bırakılamaz")
 	@Column(name = "mail")
 	private String mail;
 
+	@NotNull
+	@NotBlank(message = "Konu alanı boş bırakılamaz")
 	@Column(name = "subject")
 	private String subject;
 
+	@NotNull
+	@NotBlank(message = "İçerik alanı boş bırakılamaz")
 	@Column(name = "content")
 	private String content;
 

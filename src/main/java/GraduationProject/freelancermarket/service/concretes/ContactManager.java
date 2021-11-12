@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class ContactManager implements ContactService {
 
 	@Override
 	public Result add(Contact contact) {
+		contact.setStatus(false);
+		contact.setDate(LocalDate.now());
 		contactRepository.save(contact);
 		return new SuccessResult("Mesaj gönderildi");
 	}
@@ -33,7 +36,7 @@ public class ContactManager implements ContactService {
 
 	@Override
 	public Result changeStatus(int id) {
-		Contact contact = contactRepository.findById(id).get();
+		Contact contact = contactRepository.findById(id).orElse(null);
 		if (contact != null) {
 			contact.setStatus(true);
 			contactRepository.save(contact);

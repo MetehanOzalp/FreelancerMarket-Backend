@@ -2,9 +2,11 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.Favorite;
+import GraduationProject.freelancermarket.model.dto.FavoriteAddDto;
 import GraduationProject.freelancermarket.repository.FavoriteRepository;
 import GraduationProject.freelancermarket.service.abstracts.FavoriteService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -18,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class FavoriteManager implements FavoriteService {
 
 	private final FavoriteRepository favoriteRepository;
+	private final ModelMapper modelMapper;
 
 	@Override
-	public Result add(Favorite favorite) {
+	public Result add(FavoriteAddDto favoriteAddDto) {
+		Favorite favorite = modelMapper.map(favoriteAddDto, Favorite.class);
 		favoriteRepository.save(favorite);
 		return new SuccessResult("Favorilere eklendi");
 	}
