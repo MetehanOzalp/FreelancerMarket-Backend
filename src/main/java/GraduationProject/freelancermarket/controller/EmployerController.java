@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import GraduationProject.freelancermarket.entities.Employer;
+import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +39,8 @@ public class EmployerController {
 	}
 
 	@PostMapping("update")
-	public ResponseEntity<?> update(@RequestBody Employer employer) {
-		var result = employerService.update(employer);
+	public ResponseEntity<?> update(@RequestBody EmployerUpdateDto employerUpdateDto) {
+		var result = employerService.update(employerUpdateDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

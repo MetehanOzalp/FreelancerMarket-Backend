@@ -3,6 +3,7 @@ package GraduationProject.freelancermarket.service.concretes;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.SubCategory;
@@ -24,6 +25,7 @@ public class SubCategoryManager implements SubCategoryService {
 
 	@Override
 	public Result add(SubCategoryAddDto subCategoryAddDto) {
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		SubCategory subCategory = modelMapper.map(subCategoryAddDto, SubCategory.class);
 		subCategoryRepository.save(subCategory);
 		return new SuccessResult("Alt kategori eklendi");

@@ -2,9 +2,11 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.Employer;
+import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
 import GraduationProject.freelancermarket.repository.EmployerRepository;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class EmployerManager implements EmployerService {
 
 	private final EmployerRepository employerRepository;
+	private final ModelMapper modelMapper;
 
 	@Override
 	public Result add(Employer employer) {
@@ -32,7 +35,8 @@ public class EmployerManager implements EmployerService {
 	}
 
 	@Override
-	public Result update(Employer employer) {
+	public Result update(EmployerUpdateDto employerUpdateDto) {
+		Employer employer = modelMapper.map(employerUpdateDto, Employer.class);
 		employerRepository.save(employer);
 		return new SuccessResult("İşveren güncellendi");
 	}

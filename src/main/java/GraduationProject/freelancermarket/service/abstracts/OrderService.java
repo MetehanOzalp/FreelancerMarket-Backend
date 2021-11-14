@@ -11,7 +11,7 @@ public interface OrderService {
 
 	Result add(OrderAddDto orderAddDto);
 
-	Result confirm(Order order);
+	Result confirm(int id);
 
 	DataResult<List<Order>> getByEmployerId(int employerId);
 

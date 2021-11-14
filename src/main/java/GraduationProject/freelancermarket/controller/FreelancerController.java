@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import GraduationProject.freelancermarket.entities.Freelancer;
+import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +30,8 @@ public class FreelancerController {
 	private final FreelancerService freelancerService;
 
 	@PostMapping("update")
-	public ResponseEntity<?> update(@RequestBody Freelancer freelancer) {
-		var result = freelancerService.update(freelancer);
+	public ResponseEntity<?> update(@RequestBody FreelancerUpdateDto freelancerUpdateDto) {
+		var result = freelancerService.update(freelancerUpdateDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

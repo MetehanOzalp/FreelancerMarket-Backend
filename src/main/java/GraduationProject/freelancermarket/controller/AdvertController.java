@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
+import GraduationProject.freelancermarket.model.dto.AdvertUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +51,8 @@ public class AdvertController {
 	}
 
 	@PostMapping("update")
-	public ResponseEntity<?> update(@RequestBody Advert advert) {
-		var result = advertService.update(advert);
+	public ResponseEntity<?> update(@RequestBody AdvertUpdateDto advertUpdateDto) {
+		var result = advertService.update(advertUpdateDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

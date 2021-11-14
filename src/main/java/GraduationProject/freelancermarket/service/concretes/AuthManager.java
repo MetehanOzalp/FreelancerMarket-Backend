@@ -36,8 +36,8 @@ public class AuthManager implements AuthService {
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
-		employerForRegisterDto.setImagePath(imagePath);
 		Employer employer = modelMapper.map(employerForRegisterDto, Employer.class);
+		employer.setImagePath(imagePath);
 		var added = employerService.add(employer);
 		if (!added.isSuccess()) {
 			return new ErrorResult(added.getMessage());

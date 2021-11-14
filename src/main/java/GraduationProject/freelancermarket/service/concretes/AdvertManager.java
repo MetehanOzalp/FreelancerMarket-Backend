@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
+import GraduationProject.freelancermarket.model.dto.AdvertUpdateDto;
 import GraduationProject.freelancermarket.repository.AdvertRepository;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -39,7 +40,8 @@ public class AdvertManager implements AdvertService {
 	}
 
 	@Override
-	public Result update(Advert advert) {
+	public Result update(AdvertUpdateDto advertUpdateDto) {
+		Advert advert = modelMapper.map(advertUpdateDto, Advert.class);
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı güncellendi");
 	}
@@ -53,7 +55,6 @@ public class AdvertManager implements AdvertService {
 	public DataResult<Advert> getById(int id) {
 		var result = advertRepository.findById(id).orElse(null);
 		if (result == null) {
-			System.out.println("Geldi");
 			return new ErrorDataResult<Advert>(result, "İş ilanı bulunamadı");
 		}
 		return new SuccessDataResult<Advert>(result, "İş ilanı listelendi");

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import GraduationProject.freelancermarket.entities.Order;
 import GraduationProject.freelancermarket.model.dto.OrderAddDto;
 import GraduationProject.freelancermarket.service.abstracts.OrderService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
@@ -39,8 +38,8 @@ public class OrderController {
 	}
 
 	@PostMapping("confirm")
-	public ResponseEntity<?> confirm(@RequestBody Order order) {
-		var result = orderService.confirm(order);
+	public ResponseEntity<?> confirm(@RequestParam int id) {
+		var result = orderService.confirm(id);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
