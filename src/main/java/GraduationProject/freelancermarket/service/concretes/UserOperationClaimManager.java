@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserOperationClaimManager implements UserOperationClaimService {
 
-	private UserOperationClaimRepository userOperationClaimRepository;
+	private final UserOperationClaimRepository userOperationClaimRepository;
 
 	@Override
 	public Result add(UserOperationClaim userOperationClaim) {
