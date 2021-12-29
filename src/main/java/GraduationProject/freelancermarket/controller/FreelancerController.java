@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,7 @@ public class FreelancerController {
 	private final FreelancerService freelancerService;
 
 	@PostMapping("update")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> update(@RequestBody FreelancerUpdateDto freelancerUpdateDto) {
 		var result = freelancerService.update(freelancerUpdateDto);
 		if (!result.isSuccess()) {
@@ -39,6 +41,7 @@ public class FreelancerController {
 	}
 
 	@DeleteMapping("delete")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> delete(@RequestParam int id) {
 		var result = freelancerService.delete(id);
 		if (!result.isSuccess()) {

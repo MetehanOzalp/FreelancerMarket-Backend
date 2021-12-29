@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +30,7 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping("add")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
 	public ResponseEntity<?> add(@RequestBody OrderAddDto orderAddDto) {
 		var result = orderService.add(orderAddDto);
 		if (!result.isSuccess()) {
@@ -38,6 +40,7 @@ public class OrderController {
 	}
 
 	@PostMapping("confirm")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
 	public ResponseEntity<?> confirm(@RequestParam int id) {
 		var result = orderService.confirm(id);
 		if (!result.isSuccess()) {

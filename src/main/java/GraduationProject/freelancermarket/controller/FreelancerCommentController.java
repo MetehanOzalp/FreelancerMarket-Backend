@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +32,7 @@ public class FreelancerCommentController {
 	private final FreelancerCommentService freelancerCommentService;
 
 	@PostMapping("add")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> add(@Valid @RequestBody FreelancerCommentAddDto freelancerCommentAddDto) {
 		var result = freelancerCommentService.add(freelancerCommentAddDto);
 		if (!result.isSuccess()) {
@@ -40,6 +42,7 @@ public class FreelancerCommentController {
 	}
 
 	@DeleteMapping("delete")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> delete(@RequestBody int id) {
 		var result = freelancerCommentService.delete(id);
 		if (!result.isSuccess()) {

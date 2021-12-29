@@ -1,19 +1,9 @@
 package GraduationProject.freelancermarket.entities;
 
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -53,8 +43,10 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<WalletTransaction> walletTransactions;
 
-	@OneToMany(mappedBy = "user")
-	private List<UserOperationClaim> userOperationClaims;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "user_operation_claims", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "claim_id") })
+	private Set<OperationClaim> operationClaims;
 
 	@OneToMany(mappedBy = "user")
 	private List<Favorite> favorities;

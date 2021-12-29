@@ -5,11 +5,14 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Freelancer;
 import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
 import GraduationProject.freelancermarket.repository.FreelancerRepository;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
+import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.utils.DataResult;
+import GraduationProject.freelancermarket.utils.ErrorResult;
 import GraduationProject.freelancermarket.utils.Result;
 import GraduationProject.freelancermarket.utils.SuccessDataResult;
 import GraduationProject.freelancermarket.utils.SuccessResult;
@@ -20,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class FreelancerManager implements FreelancerService {
 
 	private final FreelancerRepository freelancerRepository;
+	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 	private final ModelMapper modelMapper;
 
 	@Override
@@ -30,6 +34,10 @@ public class FreelancerManager implements FreelancerService {
 
 	@Override
 	public Result update(FreelancerUpdateDto freelancerUpdateDto) {
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(freelancerUpdateDto.getId()));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
 		Freelancer freelancer = modelMapper.map(freelancerUpdateDto, Freelancer.class);
 		freelancerRepository.save(freelancer);
 		return new SuccessResult("Freelancer güncellendi");
@@ -37,6 +45,10 @@ public class FreelancerManager implements FreelancerService {
 
 	@Override
 	public Result delete(int id) {
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(id));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
 		freelancerRepository.deleteById(id);
 		return new SuccessResult("Freelancer silindi");
 	}
@@ -49,6 +61,14 @@ public class FreelancerManager implements FreelancerService {
 	@Override
 	public DataResult<List<Freelancer>> getAll() {
 		return new SuccessDataResult<List<Freelancer>>(freelancerRepository.findAll(), "Freelancerlar listelendi");
+	}
+
+	public Result userIdAndTokenUserNameVerification(int userId) {
+		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
+		if (!result.isSuccess()) {
+			return new ErrorResult(result.getMessage());
+		}
+		return new SuccessResult();
 	}
 
 }

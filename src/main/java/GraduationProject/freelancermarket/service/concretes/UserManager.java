@@ -17,8 +17,26 @@ public class UserManager implements UserService {
 	private final UserRepository userRepository;
 
 	@Override
+	public DataResult<User> getById(int id) {
+		var user = userRepository.findById(id).orElse(null);
+		if (user == null) {
+			return new ErrorDataResult<User>("Kullanıcı bulunamadı");
+		}
+		return new SuccessDataResult<User>(user);
+	}
+
+	@Override
 	public DataResult<User> getByMail(String mail) {
 		var user = userRepository.findByEmail(mail);
+		if (user == null) {
+			return new ErrorDataResult<User>("Kullanıcı bulunamadı");
+		}
+		return new SuccessDataResult<User>(user);
+	}
+
+	@Override
+	public DataResult<User> getByUserName(String userName) {
+		var user = userRepository.findByUserName(userName);
 		if (user == null) {
 			return new ErrorDataResult<User>("Kullanıcı bulunamadı");
 		}

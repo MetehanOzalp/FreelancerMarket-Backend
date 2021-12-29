@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FreelancerUpdateDto {
 
+	@NotNull(message = "id alanı boş bırakılamaz")
+	private int id;
+
 	@NotNull
 	@NotBlank(message = "İsim alanı boş bırakılamaz")
 	private String name;

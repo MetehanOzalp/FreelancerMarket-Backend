@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +34,7 @@ public class AdvertController {
 	private final AdvertService advertService;
 
 	@PostMapping("add")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> add(@Valid @RequestBody AdvertAddDto advertAddDto) {
 		var result = advertService.add(advertAddDto);
 		if (!result.isSuccess()) {
@@ -42,6 +44,7 @@ public class AdvertController {
 	}
 
 	@DeleteMapping("delete")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> delete(@RequestParam int advertId) {
 		var result = advertService.delete(advertId);
 		if (!result.isSuccess()) {
@@ -51,6 +54,7 @@ public class AdvertController {
 	}
 
 	@PostMapping("update")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> update(@RequestBody AdvertUpdateDto advertUpdateDto) {
 		var result = advertService.update(advertUpdateDto);
 		if (!result.isSuccess()) {

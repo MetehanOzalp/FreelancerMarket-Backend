@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvertUpdateDto {
 
+	@NotNull(message = "id alanı boş bırakılamaz")
+	private int id;
+
 	@NotNull(message = "Freelancer boş bırakılamaz")
 	private int freelancerId;
 

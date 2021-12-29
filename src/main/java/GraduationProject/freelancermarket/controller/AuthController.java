@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import GraduationProject.freelancermarket.core.jwt.JwtService;
 import GraduationProject.freelancermarket.model.dto.EmployerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.FreelancerForRegisterDto;
+import GraduationProject.freelancermarket.model.dto.UserForLoginDto;
 import GraduationProject.freelancermarket.service.abstracts.AuthService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
 	private final AuthService authService;
+	private final JwtService jwtService;
 
 	@PostMapping("registerForEmployer")
 	public ResponseEntity<?> registerForEmployer(@Valid @RequestBody EmployerForRegisterDto employerForRegisterDto) {
@@ -46,6 +49,15 @@ public class AuthController {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
 		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("login")
+	public ResponseEntity<?> createJwtToken(@RequestBody UserForLoginDto userForLoginDto) throws Exception {
+		var result = authService.login(userForLoginDto);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(jwtService.createJwtToken(userForLoginDto));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

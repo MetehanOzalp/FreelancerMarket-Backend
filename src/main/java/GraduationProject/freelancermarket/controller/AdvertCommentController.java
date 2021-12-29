@@ -2,6 +2,7 @@ package GraduationProject.freelancermarket.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class AdvertCommentController {
 	private final AdvertCommentService advertCommentService;
 
 	@PostMapping("add")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> add(@RequestBody AdvertCommentAddDto advertCommentAddDto) {
 		var result = advertCommentService.add(advertCommentAddDto);
 		if (!result.isSuccess()) {

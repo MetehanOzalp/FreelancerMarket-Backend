@@ -12,6 +12,7 @@ import GraduationProject.freelancermarket.model.dto.OrderAddDto;
 import GraduationProject.freelancermarket.repository.OrderRepository;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.service.abstracts.OrderService;
+import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.service.abstracts.WalletService;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
@@ -27,11 +28,13 @@ public class OrderManager implements OrderService {
 	private final OrderRepository orderRepository;
 	private final WalletService walletService;
 	private final AdvertService advertService;
+	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 	private final ModelMapper modelMapper;
 
 	@Override
 	public Result add(OrderAddDto orderAddDto) {
-		var result = BusinessRules.run(checkIfEnoughBalance(orderAddDto.getEmployerId(), orderAddDto.getAdvertId()));
+		var result = BusinessRules.run(userIdAndTokenUserNameVerification(orderAddDto.getEmployerId()),
+				checkIfEnoughBalance(orderAddDto.getEmployerId(), orderAddDto.getAdvertId()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
@@ -52,13 +55,16 @@ public class OrderManager implements OrderService {
 		if (order == null) {
 			return new ErrorResult("Sipariş bulunamadı");
 		}
+		if (order.isStatus()) {
+			return new ErrorResult("Sipariş zaten onaylanmış");
+		}
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(order.getEmployerId()),
+				moneyDeposit(order.getAdvert().getFreelancerId(), order.getAdvert().getPrice()));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
 		order.setStatus(true);
 		orderRepository.save(order);
-		var deposit = BusinessRules
-				.run(moneyDeposit(order.getAdvert().getFreelancerId(), order.getAdvert().getPrice()));
-		if (deposit != null) {
-			return new ErrorResult(deposit.getMessage());
-		}
 		return new SuccessResult("İş onaylandı");
 	}
 
@@ -110,6 +116,14 @@ public class OrderManager implements OrderService {
 		var deposit = walletService.moneyDeposit(userId, amount);
 		if (!deposit.isSuccess()) {
 			return new ErrorResult(deposit.getMessage());
+		}
+		return new SuccessResult();
+	}
+
+	public Result userIdAndTokenUserNameVerification(int userId) {
+		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
+		if (!result.isSuccess()) {
+			return new ErrorResult(result.getMessage());
 		}
 		return new SuccessResult();
 	}

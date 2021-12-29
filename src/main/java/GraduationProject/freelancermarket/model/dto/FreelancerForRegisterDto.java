@@ -33,6 +33,4 @@ public class FreelancerForRegisterDto {
 	@NotBlank(message = "Parola alanı boş bırakılamaz")
 	private String password;
 
-	private String imagePath;
-
 }

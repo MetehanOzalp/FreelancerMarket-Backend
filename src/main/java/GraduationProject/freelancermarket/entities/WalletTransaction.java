@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import GraduationProject.freelancermarket.model.enums.WalletTransactionTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Table(name = "wallet_transactions")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "user" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class WalletTransaction {
