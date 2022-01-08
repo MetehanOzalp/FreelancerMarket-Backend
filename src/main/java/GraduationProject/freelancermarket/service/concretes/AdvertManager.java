@@ -1,14 +1,19 @@
 package GraduationProject.freelancermarket.service.concretes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
+import GraduationProject.freelancermarket.model.dto.AdvertSearchFilter;
+import GraduationProject.freelancermarket.model.dto.AdvertFilter;
 import GraduationProject.freelancermarket.model.dto.AdvertUpdateDto;
 import GraduationProject.freelancermarket.repository.AdvertRepository;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
@@ -69,6 +74,33 @@ public class AdvertManager implements AdvertService {
 	@Override
 	public DataResult<List<Advert>> getAll() {
 		return new SuccessDataResult<List<Advert>>(advertRepository.findAll(), "İş ilanları listelendi");
+	}
+
+	@Override
+	public DataResult<List<Advert>> getMostPopularJobAdverts() {
+		List<Advert> adverts = advertRepository.findAll();
+		List<Advert> mostPopularAdverts = new ArrayList<Advert>();
+		for (int i = 0; i < 12; i++) {
+			if (i < adverts.size()) {
+				mostPopularAdverts.add(adverts.get(i));
+			}
+		}
+		return new SuccessDataResult<List<Advert>>(mostPopularAdverts);
+	}
+
+	@Override
+	public DataResult<List<Advert>> getByPageNumberAndFilter(int pageNumber, String subCategoryName,
+			AdvertFilter advertFilter) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+		return new SuccessDataResult<List<Advert>>(
+				advertRepository.getByFilter(advertFilter, subCategoryName, pageable));
+	}
+
+	@Override
+	public DataResult<List<Advert>> getByPageNumberAndSearchFilter(int pageNumber,
+			AdvertSearchFilter advertSearchFilter) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 10);
+		return new SuccessDataResult<List<Advert>>(advertRepository.getBySearchFilter(advertSearchFilter, pageable));
 	}
 
 	@Override

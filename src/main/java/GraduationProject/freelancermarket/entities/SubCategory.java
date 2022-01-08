@@ -37,6 +37,9 @@ public class SubCategory {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "imagePath")
+	private String imagePath;
+
 	@ManyToOne
 	@JoinColumn(name = "top_category_id", insertable = false, updatable = false)
 	private TopCategory topCategory;

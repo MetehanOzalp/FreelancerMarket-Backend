@@ -23,7 +23,7 @@ import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/orders")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 

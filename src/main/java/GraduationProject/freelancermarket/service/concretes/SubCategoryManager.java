@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -46,6 +47,23 @@ public class SubCategoryManager implements SubCategoryService {
 	public DataResult<List<SubCategory>> getByTopCategoryId(int topCategoryId) {
 		return new SuccessDataResult<List<SubCategory>>(subCategoryRepository.findByTopCategoryId(topCategoryId),
 				"Alt kategoriler listelendi");
+	}
+
+	@Override
+	public DataResult<List<SubCategory>> getByTopCategoryName(String topCategoryName) {
+		return new SuccessDataResult<List<SubCategory>>(subCategoryRepository.findByTopCategory_Name(topCategoryName));
+	}
+
+	@Override
+	public DataResult<List<SubCategory>> getMostPopularSubCategories() {
+		List<SubCategory> subCategories = subCategoryRepository.findAll();
+		List<SubCategory> mostPopularSubCategories = new ArrayList<SubCategory>();
+		for (int i = 0; i < 8; i++) {
+			if (i < subCategories.size()) {
+				mostPopularSubCategories.add(subCategories.get(i));
+			}
+		}
+		return new SuccessDataResult<List<SubCategory>>(mostPopularSubCategories);
 	}
 
 }

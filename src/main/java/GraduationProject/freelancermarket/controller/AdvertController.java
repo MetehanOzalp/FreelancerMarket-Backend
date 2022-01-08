@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
+import GraduationProject.freelancermarket.model.dto.AdvertSearchFilter;
+import GraduationProject.freelancermarket.model.dto.AdvertFilter;
 import GraduationProject.freelancermarket.model.dto.AdvertUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
@@ -66,6 +68,35 @@ public class AdvertController {
 	@GetMapping("getAll")
 	public ResponseEntity<?> getAll() {
 		var result = advertService.getAll();
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("getMostPopularJobAdverts")
+	public ResponseEntity<?> getMostPopularJobAdverts() {
+		var result = advertService.getMostPopularJobAdverts();
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("getByFilter")
+	public ResponseEntity<?> getBySubCategoryNameFilter(@RequestParam int pageNumber,
+			@RequestParam String subCategoryName, @RequestBody AdvertFilter advertFilter) {
+		var result = advertService.getByPageNumberAndFilter(pageNumber, subCategoryName, advertFilter);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("getBySearchFilter")
+	public ResponseEntity<?> getBySearchFilter(@RequestParam int pageNumber,
+			@RequestBody AdvertSearchFilter advertSearchFilter) {
+		var result = advertService.getByPageNumberAndSearchFilter(pageNumber, advertSearchFilter);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

@@ -19,4 +19,6 @@ public interface FreelancerService {
 
 	DataResult<List<Freelancer>> getAll();
 
+	DataResult<List<Freelancer>> getMostPopularFreelancers();
+
 }

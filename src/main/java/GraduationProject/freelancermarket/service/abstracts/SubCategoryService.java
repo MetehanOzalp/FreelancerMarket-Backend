@@ -17,4 +17,8 @@ public interface SubCategoryService {
 
 	DataResult<List<SubCategory>> getByTopCategoryId(int topCategoryId);
 
+	DataResult<List<SubCategory>> getByTopCategoryName(String topCategoryName);
+
+	DataResult<List<SubCategory>> getMostPopularSubCategories();
+
 }

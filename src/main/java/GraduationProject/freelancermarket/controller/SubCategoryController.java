@@ -58,9 +58,27 @@ public class SubCategoryController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getMostPopularSubCategories")
+	public ResponseEntity<?> getMostPopularSubCategories() {
+		var result = subCategoryService.getMostPopularSubCategories();
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@GetMapping("getByTopCategoryId")
 	public ResponseEntity<?> getByTopCategoryId(@RequestParam int id) {
 		var result = subCategoryService.getByTopCategoryId(id);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("getByTopCategoryName")
+	public ResponseEntity<?> getByTopCategoryName(@RequestParam String topCategoryName) {
+		var result = subCategoryService.getByTopCategoryName(topCategoryName);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

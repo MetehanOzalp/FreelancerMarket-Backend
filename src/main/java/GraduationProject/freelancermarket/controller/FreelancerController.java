@@ -68,6 +68,15 @@ public class FreelancerController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getMostPopularFreelancers")
+	public ResponseEntity<?> getMostPopularFreelancers() {
+		var result = freelancerService.getMostPopularFreelancers();
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ErrorDataResult<Object> handleValidationExceptions(MethodArgumentNotValidException exceptions) {

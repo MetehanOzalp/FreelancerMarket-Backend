@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -61,6 +62,18 @@ public class FreelancerManager implements FreelancerService {
 	@Override
 	public DataResult<List<Freelancer>> getAll() {
 		return new SuccessDataResult<List<Freelancer>>(freelancerRepository.findAll(), "Freelancerlar listelendi");
+	}
+
+	@Override
+	public DataResult<List<Freelancer>> getMostPopularFreelancers() {
+		List<Freelancer> freelancers = freelancerRepository.findAll();
+		List<Freelancer> mostPopularFreelancers = new ArrayList<Freelancer>();
+		for (int i = 0; i < 20; i++) {
+			if (i < freelancers.size()) {
+				mostPopularFreelancers.add(freelancers.get(i));
+			}
+		}
+		return new SuccessDataResult<List<Freelancer>>(mostPopularFreelancers);
 	}
 
 	public Result userIdAndTokenUserNameVerification(int userId) {

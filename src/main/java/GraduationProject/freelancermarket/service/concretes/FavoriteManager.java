@@ -3,6 +3,7 @@ package GraduationProject.freelancermarket.service.concretes;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
@@ -33,6 +34,7 @@ public class FavoriteManager implements FavoriteService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		Favorite favorite = modelMapper.map(favoriteAddDto, Favorite.class);
 		favoriteRepository.save(favorite);
 		return new SuccessResult("Favorilere eklendi");
