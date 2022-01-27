@@ -22,6 +22,7 @@ import GraduationProject.freelancermarket.model.dto.FreelancerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.UserForLoginDto;
 import GraduationProject.freelancermarket.service.abstracts.AuthService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
+import GraduationProject.freelancermarket.utils.SuccessDataResult;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -57,7 +58,7 @@ public class AuthController {
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
-		return ResponseEntity.ok(jwtService.createJwtToken(userForLoginDto));
+		return ResponseEntity.ok(new SuccessDataResult<Object>(jwtService.createJwtToken(userForLoginDto)));
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

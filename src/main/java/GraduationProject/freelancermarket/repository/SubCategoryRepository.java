@@ -12,4 +12,6 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory, Intege
 
 	List<SubCategory> findByTopCategory_Name(String name);
 
+	SubCategory findByName(String name);
+
 }

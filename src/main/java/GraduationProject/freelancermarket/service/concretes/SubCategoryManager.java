@@ -39,6 +39,11 @@ public class SubCategoryManager implements SubCategoryService {
 	}
 
 	@Override
+	public DataResult<SubCategory> getByName(String name) {
+		return new SuccessDataResult<SubCategory>(subCategoryRepository.findByName(name));
+	}
+
+	@Override
 	public DataResult<List<SubCategory>> getAll() {
 		return new SuccessDataResult<List<SubCategory>>(subCategoryRepository.findAll(), "Alt kategoriler listelendi");
 	}

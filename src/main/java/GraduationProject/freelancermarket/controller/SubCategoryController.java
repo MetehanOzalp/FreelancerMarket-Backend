@@ -49,6 +49,15 @@ public class SubCategoryController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getByName")
+	public ResponseEntity<?> getAll(@RequestParam String name) {
+		var result = subCategoryService.getByName(name);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@GetMapping("getAll")
 	public ResponseEntity<?> getAll() {
 		var result = subCategoryService.getAll();

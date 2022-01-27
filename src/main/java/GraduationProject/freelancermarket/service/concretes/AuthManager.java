@@ -41,8 +41,8 @@ public class AuthManager implements AuthService {
 
 	@Override
 	public Result registerForEmployer(EmployerForRegisterDto employerForRegisterDto) {
-		var result = BusinessRules.run(checkIfUserExistsByEmail(employerForRegisterDto.getEmail()),
-				checkIfUserExistsByUserName(employerForRegisterDto.getUserName()));
+		var result = BusinessRules.run(checkIfUserExistsByUserName(employerForRegisterDto.getUserName()),
+				checkIfUserExistsByEmail(employerForRegisterDto.getEmail()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
@@ -54,13 +54,13 @@ public class AuthManager implements AuthService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		return new SuccessResult("İşveren eklendi");
+		return new SuccessResult("İşveren kayıt işlemi gerçekleşti");
 	}
 
 	@Override
 	public Result registerForFreelancer(FreelancerForRegisterDto freelancerForRegisterDto) {
-		var result = BusinessRules.run(checkIfUserExistsByEmail(freelancerForRegisterDto.getEmail()),
-				checkIfUserExistsByUserName(freelancerForRegisterDto.getUserName()));
+		var result = BusinessRules.run(checkIfUserExistsByUserName(freelancerForRegisterDto.getUserName()),
+				checkIfUserExistsByEmail(freelancerForRegisterDto.getEmail()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
@@ -72,14 +72,14 @@ public class AuthManager implements AuthService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		return new SuccessResult("Freelancer eklendi");
+		return new SuccessResult("Freelancer kayıt işlemi gerçekleşti");
 	}
 
 	@Override
 	public Result login(UserForLoginDto userForLoginDto) {
 		var userToCheck = userService.getByUserName(userForLoginDto.getUserName());
 		if (!userToCheck.isSuccess()) {
-			return new ErrorResult(userToCheck.getMessage());
+			return new ErrorResult("Kullanıcı adı yanlış");
 		}
 		if (!passwordEncoder.matches(userForLoginDto.getPassword(), userToCheck.getData().getPassword())) {
 			return new ErrorResult("Parola yanlış");
@@ -119,9 +119,9 @@ public class AuthManager implements AuthService {
 	}
 
 	public Result checkIfUserExistsByUserName(String userName) {
-		var result = userService.getByMail(userName);
+		var result = userService.getByUserName(userName);
 		if (result.getData() != null) {
-			return new ErrorResult("Kullanıcı zaten mevcut");
+			return new ErrorResult("Bu kullanıcı adı başkası tarafından kullanılıyor.");
 		}
 		return new SuccessResult();
 	}

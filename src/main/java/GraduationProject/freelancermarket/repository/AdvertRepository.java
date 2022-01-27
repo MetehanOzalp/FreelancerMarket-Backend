@@ -15,8 +15,9 @@ public interface AdvertRepository extends JpaRepository<Advert, Integer> {
 
 	@Query("Select j from GraduationProject.freelancermarket.entities.Advert j where"
 			+ "((:#{#filter.term}) IS NULL OR j.title LIKE (%:#{#filter.term}%))"
-			+ " and (j.price >= (:#{#filter.minPrice}))"
-			+ " and (j.price <= (:#{#filter.maxPrice}) OR (:#{#filter.maxPrice}) = 0.0)")
+			+ " and ((:#{#filter.slug}) IS NULL OR j.subCategoryId = (:#{#filter.slug}))"
+			+ " and ((:#{#filter.minPrice}) IS NULL OR j.price >= (:#{#filter.minPrice}))"
+			+ " and ((:#{#filter.maxPrice}) IS NULL OR j.price <= (:#{#filter.maxPrice}) OR (:#{#filter.maxPrice}) = 0.0)")
 	List<Advert> getBySearchFilter(@Param("filter") AdvertSearchFilter advertSearchFilter, Pageable pageable);
 
 	@Query("Select j from GraduationProject.freelancermarket.entities.Advert j where"

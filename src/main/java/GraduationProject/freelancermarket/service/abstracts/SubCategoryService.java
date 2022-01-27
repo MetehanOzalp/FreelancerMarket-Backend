@@ -13,6 +13,8 @@ public interface SubCategoryService {
 
 	Result delete(int id);
 
+	DataResult<SubCategory> getByName(String name);
+
 	DataResult<List<SubCategory>> getAll();
 
 	DataResult<List<SubCategory>> getByTopCategoryId(int topCategoryId);
