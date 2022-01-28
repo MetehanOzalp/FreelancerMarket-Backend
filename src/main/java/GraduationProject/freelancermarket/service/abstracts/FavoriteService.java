@@ -11,7 +11,7 @@ public interface FavoriteService {
 
 	Result add(FavoriteAddDto favoriteAddDto);
 
-	Result delete(int id);
+	Result delete(int userId, int advertId);
 
 	DataResult<List<Favorite>> getByUserId(int id);
 

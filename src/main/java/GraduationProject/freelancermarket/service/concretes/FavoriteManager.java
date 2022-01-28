@@ -30,7 +30,8 @@ public class FavoriteManager implements FavoriteService {
 
 	@Override
 	public Result add(FavoriteAddDto favoriteAddDto) {
-		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(favoriteAddDto.getUserId()));
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(favoriteAddDto.getUserId()),
+				checkIfAlreadyExists(favoriteAddDto));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
@@ -41,8 +42,8 @@ public class FavoriteManager implements FavoriteService {
 	}
 
 	@Override
-	public Result delete(int id) {
-		var favorite = favoriteRepository.findById(id).orElse(null);
+	public Result delete(int userId, int advertId) {
+		var favorite = favoriteRepository.findByUserIdAndAdvertId(userId, advertId);
 		if (favorite == null) {
 			return new ErrorResult("Favori bulunamadı");
 		}
@@ -50,7 +51,7 @@ public class FavoriteManager implements FavoriteService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		favoriteRepository.deleteById(id);
+		favoriteRepository.deleteById(favorite.getId());
 		return new SuccessResult("Favorilerden silindi");
 	}
 
@@ -67,6 +68,16 @@ public class FavoriteManager implements FavoriteService {
 		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
 		if (!result.isSuccess()) {
 			return new ErrorResult(result.getMessage());
+		}
+		return new SuccessResult();
+	}
+
+	public Result checkIfAlreadyExists(FavoriteAddDto favoriteAddDto) {
+		var result = getByUserId(favoriteAddDto.getUserId());
+		for (int i = 0; i < result.getData().size(); i++) {
+			if (result.getData().get(i).getAdvertId() == favoriteAddDto.getAdvertId()) {
+				return new ErrorResult("Zaten favorilere eklendi");
+			}
 		}
 		return new SuccessResult();
 	}

@@ -44,8 +44,8 @@ public class FavoriteController {
 
 	@DeleteMapping("delete")
 	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
-	public ResponseEntity<?> delete(@RequestParam int id) {
-		var result = favoriteService.delete(id);
+	public ResponseEntity<?> delete(@RequestParam int userId, @RequestParam int advertId) {
+		var result = favoriteService.delete(userId, advertId);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
