@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "freelancers")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "adverts", "comments", "favorities" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "adverts", "comments" })
 @PrimaryKeyJoinColumn(name = "user_id")
 @AllArgsConstructor
 @NoArgsConstructor

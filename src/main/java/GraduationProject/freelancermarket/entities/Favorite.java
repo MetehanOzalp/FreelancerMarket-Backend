@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "favorities")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "user" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "user", "advert" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class Favorite {

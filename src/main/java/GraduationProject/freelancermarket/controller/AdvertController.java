@@ -74,6 +74,15 @@ public class AdvertController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getByFreelancerId")
+	public ResponseEntity<?> getByFreelancerId(@RequestParam int freelancerId) {
+		var result = advertService.getByFreelancerId(freelancerId);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@GetMapping("getMostPopularJobAdverts")
 	public ResponseEntity<?> getMostPopularJobAdverts() {
 		var result = advertService.getMostPopularJobAdverts();

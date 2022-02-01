@@ -77,6 +77,15 @@ public class AdvertManager implements AdvertService {
 	}
 
 	@Override
+	public DataResult<List<Advert>> getByFreelancerId(int freelancerId) {
+		var result = advertRepository.getByFreelancerId(freelancerId);
+		if (result == null) {
+			return new ErrorDataResult<List<Advert>>(result, "İş ilanı bulunamadı!");
+		}
+		return new SuccessDataResult<List<Advert>>(result);
+	}
+
+	@Override
 	public DataResult<List<Advert>> getMostPopularJobAdverts() {
 		List<Advert> adverts = advertRepository.findAll();
 		List<Advert> mostPopularAdverts = new ArrayList<Advert>();

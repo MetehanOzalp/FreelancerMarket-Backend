@@ -20,6 +20,8 @@ public interface AdvertService {
 
 	DataResult<List<Advert>> getAll();
 
+	DataResult<List<Advert>> getByFreelancerId(int freelancerId);
+
 	DataResult<List<Advert>> getMostPopularJobAdverts();
 
 	DataResult<List<Advert>> getByPageNumberAndFilter(int pageNumber, String subCategoryName,

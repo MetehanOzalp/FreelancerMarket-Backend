@@ -37,7 +37,7 @@ public class AuthManager implements AuthService {
 	private final UserOperationClaimService userOperationClaimService;
 	private final OperationClaimService operationClaimService;
 	private final PasswordEncoder passwordEncoder;
-	private String imagePath = "https://res.cloudinary.com/metcloud/image/upload/v1636485499/user_el1kyd.png";
+	private String imagePath = "https://res.cloudinary.com/metcloud/image/upload/v1643462777/No_Avatar_i2dp6m.png";
 
 	@Override
 	public Result registerForEmployer(EmployerForRegisterDto employerForRegisterDto) {
