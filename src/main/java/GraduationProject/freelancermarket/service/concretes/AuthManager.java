@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
+import GraduationProject.freelancermarket.core.business.RandomColorCodeSelect;
 import GraduationProject.freelancermarket.entities.Employer;
 import GraduationProject.freelancermarket.entities.Freelancer;
 import GraduationProject.freelancermarket.entities.UserOperationClaim;
@@ -37,7 +38,6 @@ public class AuthManager implements AuthService {
 	private final UserOperationClaimService userOperationClaimService;
 	private final OperationClaimService operationClaimService;
 	private final PasswordEncoder passwordEncoder;
-	private String imagePath = "https://res.cloudinary.com/metcloud/image/upload/v1643462777/No_Avatar_i2dp6m.png";
 
 	@Override
 	public Result registerForEmployer(EmployerForRegisterDto employerForRegisterDto) {
@@ -47,7 +47,7 @@ public class AuthManager implements AuthService {
 			return new ErrorResult(result.getMessage());
 		}
 		Employer employer = modelMapper.map(employerForRegisterDto, Employer.class);
-		employer.setImagePath(imagePath);
+		employer.setImagePath(createImagePath(employer.getName(), employer.getSurName()));
 		employer.setPassword(getEncodedPassword(employer.getPassword()));
 		var businessRules = BusinessRules.run(employerService.add(employer), walletAdd(employer.getId()),
 				roleAdd(employer.getId(), UserOperationClaimTypeEnum.ROLE_EMPLOYER));
@@ -66,7 +66,7 @@ public class AuthManager implements AuthService {
 		}
 		Freelancer freelancer = modelMapper.map(freelancerForRegisterDto, Freelancer.class);
 		freelancer.setPassword(getEncodedPassword(freelancer.getPassword()));
-		freelancer.setImagePath(imagePath);
+		freelancer.setImagePath(createImagePath(freelancer.getName(), freelancer.getSurName()));
 		var businessRules = BusinessRules.run(freelancerService.add(freelancer), walletAdd(freelancer.getId()),
 				roleAdd(freelancer.getId(), UserOperationClaimTypeEnum.ROLE_FREELANCER));
 		if (businessRules != null) {
@@ -128,6 +128,13 @@ public class AuthManager implements AuthService {
 
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
+	}
+
+	public String createImagePath(String name, String surName) {
+		String initials = name.toUpperCase().charAt(0) + "" + surName.toUpperCase().charAt(0);
+		String colorCode = RandomColorCodeSelect.randomColorCodeSelect();
+		String imagePath = "https://via.placeholder.com/300/" + colorCode + "/FFFFFF/?text=" + initials;
+		return imagePath;
 	}
 
 }
