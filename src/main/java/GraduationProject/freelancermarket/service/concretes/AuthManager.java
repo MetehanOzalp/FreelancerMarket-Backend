@@ -1,5 +1,7 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.time.LocalDate;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,7 @@ public class AuthManager implements AuthService {
 			return new ErrorResult(result.getMessage());
 		}
 		Employer employer = modelMapper.map(employerForRegisterDto, Employer.class);
+		employer.setCreatedDate(LocalDate.now());
 		employer.setImagePath(createImagePath(employer.getName(), employer.getSurName()));
 		employer.setPassword(getEncodedPassword(employer.getPassword()));
 		var businessRules = BusinessRules.run(employerService.add(employer), walletAdd(employer.getId()),
@@ -65,6 +68,7 @@ public class AuthManager implements AuthService {
 			return new ErrorResult(result.getMessage());
 		}
 		Freelancer freelancer = modelMapper.map(freelancerForRegisterDto, Freelancer.class);
+		freelancer.setCreatedDate(LocalDate.now());
 		freelancer.setPassword(getEncodedPassword(freelancer.getPassword()));
 		freelancer.setImagePath(createImagePath(freelancer.getName(), freelancer.getSurName()));
 		var businessRules = BusinessRules.run(freelancerService.add(freelancer), walletAdd(freelancer.getId()),

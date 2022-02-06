@@ -22,6 +22,8 @@ public interface AdvertService {
 
 	DataResult<List<Advert>> getByFreelancerId(int freelancerId);
 
+	DataResult<List<Advert>> getBySubCategoryId(int subCategoryId);
+
 	DataResult<List<Advert>> getMostPopularJobAdverts();
 
 	DataResult<List<Advert>> getByPageNumberAndFilter(int pageNumber, String subCategoryName,

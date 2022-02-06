@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.entities;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class User {
 
 	@Column(name = "password")
 	private String password;
+
+	@Column(name = "createdDate")
+	private LocalDate createdDate;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	private Wallet wallet;

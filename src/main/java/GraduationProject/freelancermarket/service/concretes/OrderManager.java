@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -41,6 +42,7 @@ public class OrderManager implements OrderService {
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		Order order = modelMapper.map(orderAddDto, Order.class);
 		order.setStatus(false);
+		order.setCreatedDate(LocalDate.now());
 		orderRepository.save(order);
 		var withdraw = BusinessRules.run(moneyWithdraw(order.getEmployerId(), order.getAdvertId()));
 		if (withdraw != null) {

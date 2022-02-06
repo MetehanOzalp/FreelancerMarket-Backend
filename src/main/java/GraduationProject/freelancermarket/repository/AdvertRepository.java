@@ -29,4 +29,6 @@ public interface AdvertRepository extends JpaRepository<Advert, Integer> {
 
 	List<Advert> getByFreelancerId(int freelancerId);
 
+	List<Advert> getBySubCategoryId(int subCategoryId);
+
 }

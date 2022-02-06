@@ -83,6 +83,15 @@ public class AdvertController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getBySubCategoryId")
+	public ResponseEntity<?> getBySubCategoryId(@RequestParam int subCategoryId) {
+		var result = advertService.getBySubCategoryId(subCategoryId);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@GetMapping("getMostPopularJobAdverts")
 	public ResponseEntity<?> getMostPopularJobAdverts() {
 		var result = advertService.getMostPopularJobAdverts();

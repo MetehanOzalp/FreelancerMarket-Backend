@@ -1,5 +1,7 @@
 package GraduationProject.freelancermarket.entities;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,6 +38,9 @@ public class Order {
 
 	@Column(name = "status")
 	private boolean status;
+
+	@Column(name = "createdDate")
+	private LocalDate createdDate;
 
 	@ManyToOne
 	@JoinColumn(name = "employer_id", insertable = false, updatable = false)
