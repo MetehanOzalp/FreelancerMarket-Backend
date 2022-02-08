@@ -9,6 +9,7 @@ import GraduationProject.freelancermarket.entities.Wallet;
 import GraduationProject.freelancermarket.entities.WalletTransaction;
 import GraduationProject.freelancermarket.model.enums.WalletTransactionTypeEnum;
 import GraduationProject.freelancermarket.repository.WalletRepository;
+import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.service.abstracts.WalletService;
 import GraduationProject.freelancermarket.service.abstracts.WalletTransactionService;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -25,6 +26,7 @@ public class WalletManager implements WalletService {
 
 	private final WalletRepository walletRepository;
 	private final WalletTransactionService walletTransactionService;
+	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 
 	@Override
 	public Result add(Wallet wallet) {
@@ -68,6 +70,10 @@ public class WalletManager implements WalletService {
 
 	@Override
 	public DataResult<Wallet> getByUserId(int userId) {
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(userId));
+		if (businessRules != null) {
+			return new ErrorDataResult<Wallet>(businessRules.getMessage());
+		}
 		var wallet = walletRepository.findByUserId(userId);
 		if (wallet == null) {
 			return new ErrorDataResult<Wallet>("Kullanıcıya ait cüzdan bulunamadı");
@@ -78,6 +84,14 @@ public class WalletManager implements WalletService {
 	public Result checkIfEnoughBalance(Double balance, Double amount) {
 		if (balance < amount) {
 			return new ErrorResult("Bakiye yetersiz");
+		}
+		return new SuccessResult();
+	}
+
+	public Result userIdAndTokenUserNameVerification(int userId) {
+		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
+		if (!result.isSuccess()) {
+			return new ErrorResult(result.getMessage());
 		}
 		return new SuccessResult();
 	}

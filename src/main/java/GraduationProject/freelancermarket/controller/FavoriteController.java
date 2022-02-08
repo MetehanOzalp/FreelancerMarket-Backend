@@ -1,6 +1,8 @@
 package GraduationProject.freelancermarket.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import GraduationProject.freelancermarket.model.dto.FavoriteAddDto;
+import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.service.abstracts.FavoriteService;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class FavoriteController {
 
 	private final FavoriteService favoriteService;
+	private final AdvertService advertService;
 
 	@PostMapping("add")
 	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
@@ -54,8 +58,16 @@ public class FavoriteController {
 
 	@GetMapping("getByUserId")
 	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
-	public ResponseEntity<?> getByUserId(@RequestParam int id) {
-		var result = favoriteService.getByUserId(id);
+	public ResponseEntity<?> getByUserId(@RequestParam int userId) {
+		var favorities = favoriteService.getByUserId(userId);
+		if (!favorities.isSuccess()) {
+			return new ResponseEntity<Object>(favorities, HttpStatus.BAD_REQUEST);
+		}
+		List<Integer> ids = new ArrayList<Integer>();
+		for (var favorite : favorities.getData()) {
+			ids.add(favorite.getAdvertId());
+		}
+		var result = advertService.getByIdIn(ids);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

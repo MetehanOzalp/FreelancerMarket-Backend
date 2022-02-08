@@ -31,4 +31,6 @@ public interface AdvertRepository extends JpaRepository<Advert, Integer> {
 
 	List<Advert> getBySubCategoryId(int subCategoryId);
 
+	List<Advert> getByIdIn(List<Integer> ids);
+
 }

@@ -77,6 +77,11 @@ public class AdvertManager implements AdvertService {
 	}
 
 	@Override
+	public DataResult<List<Advert>> getByIdIn(List<Integer> ids) {
+		return new SuccessDataResult<List<Advert>>(advertRepository.getByIdIn(ids));
+	}
+
+	@Override
 	public DataResult<List<Advert>> getByFreelancerId(int freelancerId) {
 		var result = advertRepository.getByFreelancerId(freelancerId);
 		if (result == null) {

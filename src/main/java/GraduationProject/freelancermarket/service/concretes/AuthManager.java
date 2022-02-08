@@ -12,14 +12,17 @@ import GraduationProject.freelancermarket.entities.Employer;
 import GraduationProject.freelancermarket.entities.Freelancer;
 import GraduationProject.freelancermarket.entities.UserOperationClaim;
 import GraduationProject.freelancermarket.entities.Wallet;
+import GraduationProject.freelancermarket.model.dto.ChangePasswordDto;
 import GraduationProject.freelancermarket.model.dto.EmployerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.FreelancerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.UserForLoginDto;
 import GraduationProject.freelancermarket.model.enums.UserOperationClaimTypeEnum;
+import GraduationProject.freelancermarket.repository.UserRepository;
 import GraduationProject.freelancermarket.service.abstracts.AuthService;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
 import GraduationProject.freelancermarket.service.abstracts.OperationClaimService;
+import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.service.abstracts.UserOperationClaimService;
 import GraduationProject.freelancermarket.service.abstracts.UserService;
 import GraduationProject.freelancermarket.service.abstracts.WalletService;
@@ -35,11 +38,13 @@ public class AuthManager implements AuthService {
 	private final EmployerService employerService;
 	private final FreelancerService freelancerService;
 	private final UserService userService;
+	private final UserRepository userRepository;
 	private final ModelMapper modelMapper;
 	private final WalletService walletService;
 	private final UserOperationClaimService userOperationClaimService;
 	private final OperationClaimService operationClaimService;
 	private final PasswordEncoder passwordEncoder;
+	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 
 	@Override
 	public Result registerForEmployer(EmployerForRegisterDto employerForRegisterDto) {
@@ -91,6 +96,23 @@ public class AuthManager implements AuthService {
 		return new SuccessResult();
 	}
 
+	@Override
+	public Result changePassword(ChangePasswordDto changePasswordDto) {
+		var user = userService.getById(changePasswordDto.getUserId());
+		if (!user.isSuccess()) {
+			return new ErrorResult(user.getMessage());
+		}
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(changePasswordDto.getUserId()),
+				checkOldPassword(user.getData().getPassword(), changePasswordDto.getOldPassword()),
+				checkPasswordRepetition(changePasswordDto.getNewPassword(), changePasswordDto.getNewPasswordRepeat()));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
+		user.getData().setPassword(getEncodedPassword(changePasswordDto.getNewPassword()));
+		userRepository.save(user.getData());
+		return new SuccessResult("Parola değiştirildi");
+	}
+
 	public Result roleAdd(int userId, UserOperationClaimTypeEnum userOperationClaimTypeEnum) {
 		var operationClaim = operationClaimService.getByOperationClaimType(userOperationClaimTypeEnum);
 		if (!operationClaim.isSuccess()) {
@@ -130,6 +152,20 @@ public class AuthManager implements AuthService {
 		return new SuccessResult();
 	}
 
+	public Result checkOldPassword(String oldPassword, String password) {
+		if (!passwordEncoder.matches(password, oldPassword)) {
+			return new ErrorResult("Eski parola yanlış");
+		}
+		return new SuccessResult();
+	}
+
+	public Result checkPasswordRepetition(String password, String passwordRepeat) {
+		if (!password.equals(passwordRepeat)) {
+			return new ErrorResult("Parolalar uyuşmuyor");
+		}
+		return new SuccessResult();
+	}
+
 	public String getEncodedPassword(String password) {
 		return passwordEncoder.encode(password);
 	}
@@ -139,6 +175,14 @@ public class AuthManager implements AuthService {
 		String colorCode = RandomColorCodeSelect.randomColorCodeSelect();
 		String imagePath = "https://via.placeholder.com/300/" + colorCode + "/FFFFFF/?text=" + initials;
 		return imagePath;
+	}
+
+	public Result userIdAndTokenUserNameVerification(int userId) {
+		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
+		if (!result.isSuccess()) {
+			return new ErrorResult(result.getMessage());
+		}
+		return new SuccessResult();
 	}
 
 }

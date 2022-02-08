@@ -1,7 +1,9 @@
 package GraduationProject.freelancermarket.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,7 @@ public class EmployerController {
 
 	@PostMapping("update")
 	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
-	public ResponseEntity<?> update(@RequestBody EmployerUpdateDto employerUpdateDto) {
+	public ResponseEntity<?> update(@Valid @RequestBody EmployerUpdateDto employerUpdateDto) {
 		var result = employerService.update(employerUpdateDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
@@ -71,9 +73,9 @@ public class EmployerController {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ErrorDataResult<Object> handleValidationExceptions(MethodArgumentNotValidException exceptions) {
-		Map<String, String> validationErrors = new HashMap<String, String>();
+		List<String> validationErrors = new ArrayList<String>();
 		for (FieldError fieldError : exceptions.getBindingResult().getFieldErrors()) {
-			validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+			validationErrors.add(fieldError.getDefaultMessage());
 		}
 		return new ErrorDataResult<Object>(validationErrors, "Doğrulama hataları");
 	}

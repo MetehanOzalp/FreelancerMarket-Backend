@@ -12,6 +12,7 @@ import GraduationProject.freelancermarket.model.dto.SubCategoryAddDto;
 import GraduationProject.freelancermarket.repository.SubCategoryRepository;
 import GraduationProject.freelancermarket.service.abstracts.SubCategoryService;
 import GraduationProject.freelancermarket.utils.DataResult;
+import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import GraduationProject.freelancermarket.utils.Result;
 import GraduationProject.freelancermarket.utils.SuccessDataResult;
 import GraduationProject.freelancermarket.utils.SuccessResult;
@@ -40,7 +41,11 @@ public class SubCategoryManager implements SubCategoryService {
 
 	@Override
 	public DataResult<SubCategory> getByName(String name) {
-		return new SuccessDataResult<SubCategory>(subCategoryRepository.findByName(name));
+		var subCategory = subCategoryRepository.findByName(name);
+		if (subCategory == null) {
+			return new ErrorDataResult<SubCategory>("Kategori bulunamadı");
+		}
+		return new SuccessDataResult<SubCategory>(subCategory);
 	}
 
 	@Override

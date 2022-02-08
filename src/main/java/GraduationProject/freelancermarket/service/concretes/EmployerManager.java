@@ -2,7 +2,6 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
@@ -11,6 +10,7 @@ import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
 import GraduationProject.freelancermarket.repository.EmployerRepository;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
+import GraduationProject.freelancermarket.service.abstracts.UserService;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
 import GraduationProject.freelancermarket.utils.Result;
@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class EmployerManager implements EmployerService {
 
 	private final EmployerRepository employerRepository;
+	private final UserService userService;
 	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
-	private final ModelMapper modelMapper;
 
 	@Override
 	public Result add(Employer employer) {
@@ -44,11 +44,19 @@ public class EmployerManager implements EmployerService {
 
 	@Override
 	public Result update(EmployerUpdateDto employerUpdateDto) {
-		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(employerUpdateDto.getId()));
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(employerUpdateDto.getId()),
+				checkIfUserExistsByEmail(employerUpdateDto.getId(), employerUpdateDto.getEmail()));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		Employer employer = modelMapper.map(employerUpdateDto, Employer.class);
+		var employer = employerRepository.findById(employerUpdateDto.getId()).orElse(null);
+		if (employer == null) {
+			return new ErrorResult("Kullanıcı bulunamadı");
+		}
+		employer.setName(employerUpdateDto.getName());
+		employer.setSurName(employerUpdateDto.getSurName());
+		employer.setEmail(employerUpdateDto.getEmail());
+		employer.setAbout(employerUpdateDto.getAbout());
 		employerRepository.save(employer);
 		return new SuccessResult("İşveren güncellendi");
 	}
@@ -67,6 +75,14 @@ public class EmployerManager implements EmployerService {
 		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
 		if (!result.isSuccess()) {
 			return new ErrorResult(result.getMessage());
+		}
+		return new SuccessResult();
+	}
+
+	public Result checkIfUserExistsByEmail(int id, String email) {
+		var result = userService.getByMail(email);
+		if ((result.getData() != null) && (id != result.getData().getId())) {
+			return new ErrorResult("Bu email daha önceden alınmış.");
 		}
 		return new SuccessResult();
 	}

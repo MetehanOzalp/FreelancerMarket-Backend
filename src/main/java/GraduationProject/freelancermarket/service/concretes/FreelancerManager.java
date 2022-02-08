@@ -3,7 +3,6 @@ package GraduationProject.freelancermarket.service.concretes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
@@ -12,6 +11,7 @@ import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
 import GraduationProject.freelancermarket.repository.FreelancerRepository;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
+import GraduationProject.freelancermarket.service.abstracts.UserService;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
 import GraduationProject.freelancermarket.utils.Result;
@@ -24,8 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class FreelancerManager implements FreelancerService {
 
 	private final FreelancerRepository freelancerRepository;
+	private final UserService userService;
 	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
-	private final ModelMapper modelMapper;
 
 	@Override
 	public Result add(Freelancer freelancer) {
@@ -35,11 +35,20 @@ public class FreelancerManager implements FreelancerService {
 
 	@Override
 	public Result update(FreelancerUpdateDto freelancerUpdateDto) {
-		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(freelancerUpdateDto.getId()));
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(freelancerUpdateDto.getId()),
+				checkIfUserExistsByEmail(freelancerUpdateDto.getId(), freelancerUpdateDto.getEmail()));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		Freelancer freelancer = modelMapper.map(freelancerUpdateDto, Freelancer.class);
+		var freelancer = freelancerRepository.findById(freelancerUpdateDto.getId()).orElse(null);
+		if (freelancer == null) {
+			return new ErrorResult("Kullanıcı bulunamadı");
+		}
+		freelancer.setName(freelancerUpdateDto.getName());
+		freelancer.setSurName(freelancerUpdateDto.getSurName());
+		freelancer.setEmail(freelancerUpdateDto.getEmail());
+		freelancer.setAbout(freelancerUpdateDto.getAbout());
+		freelancer.setAppellation(freelancerUpdateDto.getAppellation());
 		freelancerRepository.save(freelancer);
 		return new SuccessResult("Freelancer güncellendi");
 	}
@@ -80,6 +89,14 @@ public class FreelancerManager implements FreelancerService {
 		var result = tokenUserNameAndIdValidationService.userIdAndTokenUserNameVerification(userId);
 		if (!result.isSuccess()) {
 			return new ErrorResult(result.getMessage());
+		}
+		return new SuccessResult();
+	}
+
+	public Result checkIfUserExistsByEmail(int id, String email) {
+		var result = userService.getByMail(email);
+		if ((result.getData() != null) && (id != result.getData().getId())) {
+			return new ErrorResult("Bu email daha önceden alınmış.");
 		}
 		return new SuccessResult();
 	}

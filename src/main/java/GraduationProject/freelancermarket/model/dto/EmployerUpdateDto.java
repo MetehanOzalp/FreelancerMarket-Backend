@@ -3,6 +3,8 @@ package GraduationProject.freelancermarket.model.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,20 +23,13 @@ public class EmployerUpdateDto {
 
 	@NotNull
 	@NotBlank(message = "Soyisim alanı boş bırakılamaz")
-	private String surname;
-
-	@NotNull
-	@NotBlank(message = "Kullanıcı adı alanı boş bırakılamaz")
-	private String userName;
+	private String surName;
 
 	@NotNull
 	@NotBlank(message = "Email alanı boş bırakılamaz")
 	private String email;
 
-	@NotNull
-	@NotBlank(message = "Parola alanı boş bırakılamaz")
-	private String password;
-
+	@Length(min = 3, max = 500, message = "Hakkımda alanına en fazla 500 karakter girilebilir")
 	private String about;
 
 }

@@ -1,5 +1,6 @@
 package GraduationProject.freelancermarket.service.abstracts;
 
+import GraduationProject.freelancermarket.model.dto.ChangePasswordDto;
 import GraduationProject.freelancermarket.model.dto.EmployerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.FreelancerForRegisterDto;
 import GraduationProject.freelancermarket.model.dto.UserForLoginDto;
@@ -12,5 +13,7 @@ public interface AuthService {
 	Result registerForFreelancer(FreelancerForRegisterDto freelancerForRegisterDto);
 
 	Result login(UserForLoginDto userForLoginDto);
+
+	Result changePassword(ChangePasswordDto changePasswordDto);
 
 }
