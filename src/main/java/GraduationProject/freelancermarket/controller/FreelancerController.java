@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
@@ -36,6 +37,16 @@ public class FreelancerController {
 	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> update(@Valid @RequestBody FreelancerUpdateDto freelancerUpdateDto) {
 		var result = freelancerService.update(freelancerUpdateDto);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("imageUpdate")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
+	public ResponseEntity<?> imageUpdate(@RequestParam int id, @RequestParam MultipartFile file) {
+		var result = freelancerService.imageUpdate(id, file);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

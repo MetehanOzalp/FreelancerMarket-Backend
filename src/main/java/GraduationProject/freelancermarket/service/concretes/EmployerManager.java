@@ -1,9 +1,13 @@
 package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import GraduationProject.freelancermarket.core.adapters.image.CloudinaryManager;
+import GraduationProject.freelancermarket.core.adapters.image.ImageService;
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Employer;
 import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
@@ -62,6 +66,24 @@ public class EmployerManager implements EmployerService {
 	}
 
 	@Override
+	public Result imageUpdate(int id, MultipartFile file) {
+		var employer = employerRepository.findById(id).orElse(null);
+		if (employer == null) {
+			return new ErrorResult("İşveren bulunamadı");
+		}
+		var businessRules = BusinessRules.run(isSupportedContentType(file.getContentType()));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
+		ImageService imageService = new CloudinaryManager();
+		@SuppressWarnings("unchecked")
+		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file).getData();
+		employer.setImagePath(upload.get("url"));
+		employerRepository.save(employer);
+		return new SuccessResult("Fotoğraf güncellendi");
+	}
+
+	@Override
 	public DataResult<Employer> getById(int id) {
 		return new SuccessDataResult<Employer>(employerRepository.findById(id).get(), "İşveren listelendi");
 	}
@@ -85,6 +107,13 @@ public class EmployerManager implements EmployerService {
 			return new ErrorResult("Bu email daha önceden alınmış.");
 		}
 		return new SuccessResult();
+	}
+
+	public Result isSupportedContentType(String contentType) {
+		if (contentType.equals("image/png") || contentType.equals("image/jpg") || contentType.equals("image/jpeg")) {
+			return new SuccessResult();
+		}
+		return new ErrorResult("Lütfen sadece PNG, JPG veya JPEG dosya yükleyiniz.");
 	}
 
 }

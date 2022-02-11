@@ -2,6 +2,8 @@ package GraduationProject.freelancermarket.service.abstracts;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import GraduationProject.freelancermarket.entities.Employer;
 import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
 import GraduationProject.freelancermarket.utils.DataResult;
@@ -14,6 +16,8 @@ public interface EmployerService {
 	Result delete(int id);
 
 	Result update(EmployerUpdateDto employerUpdateDto);
+
+	Result imageUpdate(int id, MultipartFile file);
 
 	DataResult<Employer> getById(int id);
 

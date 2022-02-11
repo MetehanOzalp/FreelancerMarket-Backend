@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import GraduationProject.freelancermarket.model.dto.EmployerUpdateDto;
 import GraduationProject.freelancermarket.service.abstracts.EmployerService;
@@ -46,6 +47,16 @@ public class EmployerController {
 	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
 	public ResponseEntity<?> update(@Valid @RequestBody EmployerUpdateDto employerUpdateDto) {
 		var result = employerService.update(employerUpdateDto);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@PostMapping("imageUpdate")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
+	public ResponseEntity<?> imageUpdate(@RequestParam int id, @RequestParam MultipartFile file) {
+		var result = employerService.imageUpdate(id, file);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

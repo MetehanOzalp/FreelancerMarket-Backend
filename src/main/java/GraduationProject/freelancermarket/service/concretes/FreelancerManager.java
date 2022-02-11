@@ -2,9 +2,13 @@ package GraduationProject.freelancermarket.service.concretes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import GraduationProject.freelancermarket.core.adapters.image.CloudinaryManager;
+import GraduationProject.freelancermarket.core.adapters.image.ImageService;
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Freelancer;
 import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
@@ -54,6 +58,24 @@ public class FreelancerManager implements FreelancerService {
 	}
 
 	@Override
+	public Result imageUpdate(int id, MultipartFile file) {
+		var freelancer = freelancerRepository.findById(id).orElse(null);
+		if (freelancer == null) {
+			return new ErrorResult("Freelancer bulunamadı");
+		}
+		var businessRules = BusinessRules.run(isSupportedContentType(file.getContentType()));
+		if (businessRules != null) {
+			return new ErrorResult(businessRules.getMessage());
+		}
+		ImageService imageService = new CloudinaryManager();
+		@SuppressWarnings("unchecked")
+		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file).getData();
+		freelancer.setImagePath(upload.get("url"));
+		freelancerRepository.save(freelancer);
+		return new SuccessResult("Fotoğraf güncellendi");
+	}
+
+	@Override
 	public Result delete(int id) {
 		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(id));
 		if (businessRules != null) {
@@ -99,6 +121,13 @@ public class FreelancerManager implements FreelancerService {
 			return new ErrorResult("Bu email daha önceden alınmış.");
 		}
 		return new SuccessResult();
+	}
+
+	public Result isSupportedContentType(String contentType) {
+		if (contentType.equals("image/png") || contentType.equals("image/jpg") || contentType.equals("image/jpeg")) {
+			return new SuccessResult();
+		}
+		return new ErrorResult("Lütfen sadece PNG, JPG veya JPEG dosya yükleyiniz.");
 	}
 
 }
