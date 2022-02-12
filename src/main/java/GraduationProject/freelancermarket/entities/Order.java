@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "orders")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "employer" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "user" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
@@ -30,8 +30,8 @@ public class Order {
 	@Column(name = "id")
 	private int id;
 
-	@Column(name = "employer_id")
-	private int employerId;
+	@Column(name = "user_id")
+	private int userId;
 
 	@Column(name = "advert_id")
 	private int advertId;
@@ -43,8 +43,8 @@ public class Order {
 	private LocalDate createdDate;
 
 	@ManyToOne
-	@JoinColumn(name = "employer_id", insertable = false, updatable = false)
-	private Employer employer;
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private User user;
 
 	@ManyToOne
 	@JoinColumn(name = "advert_id", insertable = false, updatable = false)

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
@@ -33,6 +34,7 @@ public class AdvertCommentManager implements AdvertCommentService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		AdvertComment advertComment = modelMapper.map(advertCommentAddDto, AdvertComment.class);
 		advertComment.setDate(LocalDate.now());
 		advertCommentRepository.save(advertComment);

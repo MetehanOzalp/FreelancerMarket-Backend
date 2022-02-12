@@ -49,9 +49,9 @@ public class OrderController {
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping("getByEmployerId")
+	@GetMapping("getByUserId")
 	public ResponseEntity<?> getByEmployerId(@RequestParam int id) {
-		var result = orderService.getByEmployerId(id);
+		var result = orderService.getByUserId(id);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

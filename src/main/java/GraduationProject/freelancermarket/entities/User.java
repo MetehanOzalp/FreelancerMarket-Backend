@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "comments" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -57,5 +60,8 @@ public class User {
 
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments;
+
+	@OneToMany(mappedBy = "user")
+	private List<Order> orders;
 
 }

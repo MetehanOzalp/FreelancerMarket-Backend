@@ -8,7 +8,7 @@ import GraduationProject.freelancermarket.entities.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-	List<Order> findByEmployerId(int id);
+	List<Order> findByUserId(int id);
 
 	List<Order> findByAdvert_FreelancerId(int id);
 

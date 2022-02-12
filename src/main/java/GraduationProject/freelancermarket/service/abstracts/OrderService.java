@@ -13,7 +13,7 @@ public interface OrderService {
 
 	Result confirm(int id);
 
-	DataResult<List<Order>> getByEmployerId(int employerId);
+	DataResult<List<Order>> getByUserId(int userId);
 
 	DataResult<List<Order>> getByFreelancerId(int freelancerId);
 

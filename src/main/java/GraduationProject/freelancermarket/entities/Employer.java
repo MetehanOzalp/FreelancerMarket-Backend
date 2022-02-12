@@ -1,10 +1,7 @@
 package GraduationProject.freelancermarket.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
@@ -27,8 +24,5 @@ public class Employer extends User {
 
 	@Column(name = "image_path")
 	private String imagePath;
-
-	@OneToMany(mappedBy = "employer")
-	private List<Order> orders;
 
 }

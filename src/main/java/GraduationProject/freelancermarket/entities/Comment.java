@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "comments")
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "user" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {

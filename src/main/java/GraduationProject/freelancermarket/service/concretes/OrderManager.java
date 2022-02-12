@@ -44,7 +44,7 @@ public class OrderManager implements OrderService {
 		order.setStatus(false);
 		order.setCreatedDate(LocalDate.now());
 		orderRepository.save(order);
-		var withdraw = BusinessRules.run(moneyWithdraw(order.getEmployerId(), order.getAdvertId()));
+		var withdraw = BusinessRules.run(moneyWithdraw(order.getUserId(), order.getAdvertId()));
 		if (withdraw != null) {
 			return new ErrorResult(withdraw.getMessage());
 		}
@@ -60,7 +60,7 @@ public class OrderManager implements OrderService {
 		if (order.isStatus()) {
 			return new ErrorResult("Sipariş zaten onaylanmış");
 		}
-		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(order.getEmployerId()),
+		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(order.getUserId()),
 				moneyDeposit(order.getAdvert().getFreelancerId(), order.getAdvert().getPrice()));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
@@ -71,8 +71,8 @@ public class OrderManager implements OrderService {
 	}
 
 	@Override
-	public DataResult<List<Order>> getByEmployerId(int employerId) {
-		return new SuccessDataResult<List<Order>>(orderRepository.findByEmployerId(employerId),
+	public DataResult<List<Order>> getByUserId(int userId) {
+		return new SuccessDataResult<List<Order>>(orderRepository.findByUserId(userId),
 				"İşverenin siparişleri listelendi");
 	}
 
