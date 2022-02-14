@@ -151,7 +151,7 @@ public class AdvertManager implements AdvertService {
 	public String imageUpload(MultipartFile file) {
 		ImageService imageService = new CloudinaryManager();
 		@SuppressWarnings("unchecked")
-		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file);
+		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file).getData();
 		return upload.get("url");
 	}
 

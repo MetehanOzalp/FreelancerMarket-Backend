@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class AdvertController {
 
 	@PostMapping("add")
 	@PreAuthorize("hasRole('ROLE_FREELANCER')")
-	public ResponseEntity<?> add(@Valid @RequestBody AdvertAddDto advertAddDto) {
+	public ResponseEntity<?> add(@Valid @ModelAttribute AdvertAddDto advertAddDto) {
 		var result = advertService.add(advertAddDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);

@@ -32,7 +32,6 @@ public class AdvertAddDto {
 	private String info;
 
 	@NotNull(message = "İlan resmi boş bırakılamaz")
-	@NotBlank(message = "İlan resmi boş bırakılamaz")
 	private MultipartFile imagePath;
 
 }
