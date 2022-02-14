@@ -3,12 +3,16 @@ package GraduationProject.freelancermarket.service.concretes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import GraduationProject.freelancermarket.core.adapters.image.CloudinaryManager;
+import GraduationProject.freelancermarket.core.adapters.image.ImageService;
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
@@ -42,6 +46,7 @@ public class AdvertManager implements AdvertService {
 		}
 		Advert advert = modelMapper.map(advertAddDto, Advert.class);
 		advert.setDate(LocalDate.now());
+		advert.setImagePath(imageUpload(advertAddDto.getImagePath()));
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı eklendi");
 	}
@@ -141,6 +146,13 @@ public class AdvertManager implements AdvertService {
 			return new ErrorResult(result.getMessage());
 		}
 		return new SuccessResult();
+	}
+
+	public String imageUpload(MultipartFile file) {
+		ImageService imageService = new CloudinaryManager();
+		@SuppressWarnings("unchecked")
+		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file);
+		return upload.get("url");
 	}
 
 }
