@@ -27,6 +27,8 @@ public interface AdvertRepository extends JpaRepository<Advert, Integer> {
 	List<Advert> getByFilter(@Param("filter") AdvertFilter advertFilter,
 			@Param("subCategoryName") String subCategoryName, Pageable pageable);
 
+	List<Advert> getByFreelancer_UserName(String userName);
+
 	List<Advert> getByFreelancerId(int freelancerId);
 
 	List<Advert> getBySubCategoryId(int subCategoryId);

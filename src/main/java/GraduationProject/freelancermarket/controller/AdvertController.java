@@ -58,7 +58,7 @@ public class AdvertController {
 
 	@PostMapping("update")
 	@PreAuthorize("hasRole('ROLE_FREELANCER')")
-	public ResponseEntity<?> update(@RequestBody AdvertUpdateDto advertUpdateDto) {
+	public ResponseEntity<?> update(@ModelAttribute AdvertUpdateDto advertUpdateDto) {
 		var result = advertService.update(advertUpdateDto);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
@@ -69,6 +69,15 @@ public class AdvertController {
 	@GetMapping("getAll")
 	public ResponseEntity<?> getAll() {
 		var result = advertService.getAll();
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("getByUserName")
+	public ResponseEntity<?> getByUserName(@RequestParam String userName) {
+		var result = advertService.getByUserName(userName);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

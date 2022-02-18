@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderAddDto {
 
-	@NotNull(message = "İşveren boş bırakılamaz")
-	private int employerId;
+	@NotNull(message = "Kullanıcı boş bırakılamaz")
+	private int userId;
 
 	@NotNull(message = "İlan boş bırakılamaz")
 	private int advertId;

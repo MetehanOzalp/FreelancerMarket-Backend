@@ -3,6 +3,8 @@ package GraduationProject.freelancermarket.model.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,8 +34,6 @@ public class AdvertUpdateDto {
 	@NotBlank(message = "İlan açıklaması boş bırakılamaz")
 	private String info;
 
-	@NotNull(message = "İlan resmi boş bırakılamaz")
-	@NotBlank(message = "İlan resmi boş bırakılamaz")
-	private String imagePath;
+	private MultipartFile imagePath;
 
 }

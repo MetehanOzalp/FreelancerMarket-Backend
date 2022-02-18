@@ -22,6 +22,8 @@ public interface AdvertService {
 
 	DataResult<List<Advert>> getByIdIn(List<Integer> ids);
 
+	DataResult<List<Advert>> getByUserName(String userName);
+
 	DataResult<List<Advert>> getByFreelancerId(int freelancerId);
 
 	DataResult<List<Advert>> getBySubCategoryId(int subCategoryId);

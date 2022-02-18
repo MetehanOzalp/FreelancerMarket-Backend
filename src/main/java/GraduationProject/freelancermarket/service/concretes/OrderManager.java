@@ -34,8 +34,8 @@ public class OrderManager implements OrderService {
 
 	@Override
 	public Result add(OrderAddDto orderAddDto) {
-		var result = BusinessRules.run(userIdAndTokenUserNameVerification(orderAddDto.getEmployerId()),
-				checkIfEnoughBalance(orderAddDto.getEmployerId(), orderAddDto.getAdvertId()));
+		var result = BusinessRules.run(userIdAndTokenUserNameVerification(orderAddDto.getUserId()),
+				checkIfEnoughBalance(orderAddDto.getUserId(), orderAddDto.getAdvertId()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}

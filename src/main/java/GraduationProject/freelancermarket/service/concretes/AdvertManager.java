@@ -67,11 +67,21 @@ public class AdvertManager implements AdvertService {
 
 	@Override
 	public Result update(AdvertUpdateDto advertUpdateDto) {
+		var result = advertRepository.findById(advertUpdateDto.getId()).orElse(null);
+		if (result == null) {
+			return new ErrorResult("İlan bulunamadı");
+		}
 		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(advertUpdateDto.getFreelancerId()));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
 		Advert advert = modelMapper.map(advertUpdateDto, Advert.class);
+		if (advertUpdateDto.getImagePath() == null) {
+			advert.setImagePath(result.getImagePath());
+		} else {
+			advert.setImagePath(imageUpload(advertUpdateDto.getImagePath()));
+		}
+		advert.setDate(result.getDate());
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı güncellendi");
 	}
@@ -84,6 +94,15 @@ public class AdvertManager implements AdvertService {
 	@Override
 	public DataResult<List<Advert>> getByIdIn(List<Integer> ids) {
 		return new SuccessDataResult<List<Advert>>(advertRepository.getByIdIn(ids));
+	}
+
+	@Override
+	public DataResult<List<Advert>> getByUserName(String userName) {
+		var result = advertRepository.getByFreelancer_UserName(userName);
+		if (result.size() == 0) {
+			return new ErrorDataResult<List<Advert>>("Kullanıcıya ait iş ilanı bulunamadı");
+		}
+		return new SuccessDataResult<List<Advert>>(result);
 	}
 
 	@Override
