@@ -44,9 +44,9 @@ public class AdvertManager implements AdvertService {
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
-		Advert advert = modelMapper.map(advertAddDto, Advert.class);
-		advert.setDate(LocalDate.now());
-		advert.setImagePath(imageUpload(advertAddDto.getImagePath()));
+		Advert advert = new Advert(0, advertAddDto.getFreelancerId(), advertAddDto.getSubCategoryId(),
+				advertAddDto.getTitle(), advertAddDto.getPrice(), advertAddDto.getInfo(),
+				imageUpload(advertAddDto.getImagePath()), LocalDate.now(), null, null, null, null, null);
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı eklendi");
 	}
