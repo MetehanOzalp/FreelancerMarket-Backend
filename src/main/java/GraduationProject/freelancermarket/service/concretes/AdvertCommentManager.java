@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
@@ -12,6 +13,7 @@ import GraduationProject.freelancermarket.entities.AdvertComment;
 import GraduationProject.freelancermarket.model.dto.AdvertCommentAddDto;
 import GraduationProject.freelancermarket.repository.AdvertCommentRepository;
 import GraduationProject.freelancermarket.service.abstracts.AdvertCommentService;
+import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
@@ -28,6 +30,9 @@ public class AdvertCommentManager implements AdvertCommentService {
 	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 	private final ModelMapper modelMapper;
 
+	@Autowired
+	private AdvertService advertService;
+
 	@Override
 	public Result add(AdvertCommentAddDto advertCommentAddDto) {
 		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(advertCommentAddDto.getUserId()));
@@ -38,6 +43,7 @@ public class AdvertCommentManager implements AdvertCommentService {
 		AdvertComment advertComment = modelMapper.map(advertCommentAddDto, AdvertComment.class);
 		advertComment.setDate(LocalDate.now());
 		advertCommentRepository.save(advertComment);
+		advertService.updateScore(advertCommentAddDto.getAdvertId());
 		return new SuccessResult("Yorum eklendi");
 	}
 
@@ -52,6 +58,7 @@ public class AdvertCommentManager implements AdvertCommentService {
 			return new ErrorResult(businessRules.getMessage());
 		}
 		advertCommentRepository.deleteById(id);
+		advertService.updateScore(advertComment.getAdvertId());
 		return new SuccessResult("Yorum silindi");
 	}
 
@@ -59,6 +66,12 @@ public class AdvertCommentManager implements AdvertCommentService {
 	public DataResult<List<AdvertComment>> getByAdvertId(int advertId) {
 		return new SuccessDataResult<List<AdvertComment>>(advertCommentRepository.findByAdvertId(advertId),
 				"İlanın yorumları listelendi");
+	}
+
+	@Override
+	public DataResult<List<AdvertComment>> getByFreelancerId(int freelancerId) {
+		return new SuccessDataResult<List<AdvertComment>>(
+				advertCommentRepository.findByAdvert_FreelancerId(freelancerId), "Freelancerın yorumları listelendi");
 	}
 
 	public Result userIdAndTokenUserNameVerification(int userId) {

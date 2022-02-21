@@ -73,6 +73,7 @@ public class AuthManager implements AuthService {
 			return new ErrorResult(result.getMessage());
 		}
 		Freelancer freelancer = modelMapper.map(freelancerForRegisterDto, Freelancer.class);
+		freelancer.setAverageScore(0.0);
 		freelancer.setCreatedDate(LocalDate.now());
 		freelancer.setPassword(getEncodedPassword(freelancer.getPassword()));
 		freelancer.setImagePath(createImagePath(freelancer.getName(), freelancer.getSurName()));

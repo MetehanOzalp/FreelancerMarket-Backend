@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,15 @@ import GraduationProject.freelancermarket.core.adapters.image.CloudinaryManager;
 import GraduationProject.freelancermarket.core.adapters.image.ImageService;
 import GraduationProject.freelancermarket.core.business.BusinessRules;
 import GraduationProject.freelancermarket.entities.Advert;
+import GraduationProject.freelancermarket.entities.AdvertComment;
 import GraduationProject.freelancermarket.model.dto.AdvertAddDto;
 import GraduationProject.freelancermarket.model.dto.AdvertSearchFilter;
 import GraduationProject.freelancermarket.model.dto.AdvertFilter;
 import GraduationProject.freelancermarket.model.dto.AdvertUpdateDto;
 import GraduationProject.freelancermarket.repository.AdvertRepository;
+import GraduationProject.freelancermarket.service.abstracts.AdvertCommentService;
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
+import GraduationProject.freelancermarket.service.abstracts.FreelancerService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.utils.DataResult;
 import GraduationProject.freelancermarket.utils.ErrorDataResult;
@@ -35,8 +39,12 @@ import lombok.RequiredArgsConstructor;
 public class AdvertManager implements AdvertService {
 
 	private final AdvertRepository advertRepository;
+	private final FreelancerService freelancerService;
 	private final TokenUserNameAndIdValidationService tokenUserNameAndIdValidationService;
 	private final ModelMapper modelMapper;
+
+	@Autowired
+	private AdvertCommentService advertCommentService;
 
 	@Override
 	public Result add(AdvertAddDto advertAddDto) {
@@ -46,7 +54,7 @@ public class AdvertManager implements AdvertService {
 		}
 		Advert advert = new Advert(0, advertAddDto.getFreelancerId(), advertAddDto.getSubCategoryId(),
 				advertAddDto.getTitle(), advertAddDto.getPrice(), advertAddDto.getInfo(),
-				imageUpload(advertAddDto.getImagePath()), LocalDate.now(), null, null, null, null, null);
+				imageUpload(advertAddDto.getImagePath()), LocalDate.now(), 0.0, null, null, null, null, null);
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı eklendi");
 	}
@@ -172,6 +180,23 @@ public class AdvertManager implements AdvertService {
 		@SuppressWarnings("unchecked")
 		Map<String, String> upload = (Map<String, String>) imageService.uploadImage(file).getData();
 		return upload.get("url");
+	}
+
+	public Result updateScore(int advertId) {
+		var result = advertCommentService.getByAdvertId(advertId).getData();
+		Double totalScore = 0.0;
+		if (result.size() != 0) {
+			for (AdvertComment advertComment : result) {
+				totalScore += advertComment.getScore();
+			}
+			var newAdvert = result.get(0).getAdvert();
+			newAdvert.setAverageScore(totalScore / result.size());
+			Advert advert = modelMapper.map(newAdvert, Advert.class);
+			advert.setAverageScore(totalScore / result.size());
+			advertRepository.save(advert);
+		}
+		freelancerService.updateAverageScore(result.get(0).getAdvert().getFreelancer());
+		return new SuccessResult("İş ilanının ortalama puanı güncellendi");
 	}
 
 }

@@ -22,4 +22,7 @@ public class AdvertCommentAddDto {
 	@NotNull(message = "İş ilanı boş bırakılamaz")
 	private int advertId;
 
+	@NotNull(message = "Puan boş bırakılamaz")
+	private Double score;
+
 }

@@ -15,6 +15,8 @@ public interface FreelancerService {
 
 	Result update(FreelancerUpdateDto freelancerUpdateDto);
 
+	Result updateAverageScore(Freelancer freelancer);
+
 	Result imageUpdate(int id, MultipartFile file);
 
 	Result delete(int id);

@@ -50,4 +50,13 @@ public class AdvertCommentController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getByFreelancerId")
+	public ResponseEntity<?> getByFreelancerId(@RequestParam int freelancerId) {
+		var result = advertCommentService.getByFreelancerId(freelancerId);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 }

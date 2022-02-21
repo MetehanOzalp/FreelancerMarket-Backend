@@ -23,6 +23,9 @@ public class AdvertComment extends Comment {
 
 	@Column(name = "advert_id")
 	private int advertId;
+	
+	@Column(name = "score")
+	private Double score;
 
 	@ManyToOne
 	@JoinColumn(name = "advert_id", insertable = false, updatable = false)

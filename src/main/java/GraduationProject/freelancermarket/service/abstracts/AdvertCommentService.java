@@ -15,4 +15,6 @@ public interface AdvertCommentService {
 
 	DataResult<List<AdvertComment>> getByAdvertId(int advertId);
 
+	DataResult<List<AdvertComment>> getByFreelancerId(int freelancerId);
+
 }

@@ -52,6 +52,9 @@ public class Advert {
 
 	@Column(name = "date")
 	private LocalDate date;
+	
+	@Column(name = "averageScore")
+	private Double averageScore;
 
 	@ManyToOne
 	@JoinColumn(name = "freelancer_id", insertable = false, updatable = false)

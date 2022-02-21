@@ -18,6 +18,8 @@ public interface AdvertService {
 
 	Result update(AdvertUpdateDto advertUpdateDto);
 
+	Result updateScore(int advertId);
+
 	DataResult<List<Advert>> getAll();
 
 	DataResult<List<Advert>> getByIdIn(List<Integer> ids);

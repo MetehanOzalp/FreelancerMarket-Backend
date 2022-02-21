@@ -34,6 +34,9 @@ public class Freelancer extends User {
 	@Column(name = "image_path")
 	private String imagePath;
 
+	@Column(name = "averageScore")
+	private Double averageScore;
+
 	@OneToMany(mappedBy = "freelancer")
 	private List<Skill> skills;
 

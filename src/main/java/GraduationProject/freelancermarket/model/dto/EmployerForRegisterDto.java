@@ -19,7 +19,7 @@ public class EmployerForRegisterDto {
 
 	@NotNull
 	@NotBlank(message = "Soyisim alanı boş bırakılamaz")
-	private String surname;
+	private String surName;
 
 	@NotNull
 	@NotBlank(message = "Kullanıcı adı alanı boş bırakılamaz")

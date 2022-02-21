@@ -10,4 +10,6 @@ public interface AdvertCommentRepository extends JpaRepository<AdvertComment, In
 
 	List<AdvertComment> findByAdvertId(int id);
 
+	List<AdvertComment> findByAdvert_FreelancerId(int freelancerId);
+
 }

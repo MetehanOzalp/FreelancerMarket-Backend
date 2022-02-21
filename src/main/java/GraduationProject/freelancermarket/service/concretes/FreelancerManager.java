@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import GraduationProject.freelancermarket.core.adapters.image.CloudinaryManager;
 import GraduationProject.freelancermarket.core.adapters.image.ImageService;
 import GraduationProject.freelancermarket.core.business.BusinessRules;
+import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.entities.Freelancer;
 import GraduationProject.freelancermarket.model.dto.FreelancerUpdateDto;
 import GraduationProject.freelancermarket.repository.FreelancerRepository;
@@ -121,6 +122,21 @@ public class FreelancerManager implements FreelancerService {
 			return new ErrorResult("Bu email daha önceden alınmış.");
 		}
 		return new SuccessResult();
+	}
+
+	public Result updateAverageScore(Freelancer freelancer) {
+		Double totalScore = 0.0;
+		int count = 0;
+		var adverts = freelancer.getAdverts();
+		for (Advert advert : adverts) {
+			if (advert.getAverageScore() != 0.0) {
+				totalScore += advert.getAverageScore();
+				count++;
+			}
+		}
+		freelancer.setAverageScore(totalScore / count);
+		freelancerRepository.save(freelancer);
+		return new SuccessResult("Freelancer ortalama puanı güncellendi");
 	}
 
 	public Result isSupportedContentType(String contentType) {
