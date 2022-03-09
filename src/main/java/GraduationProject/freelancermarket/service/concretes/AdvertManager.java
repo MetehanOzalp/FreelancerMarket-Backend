@@ -90,6 +90,7 @@ public class AdvertManager implements AdvertService {
 			advert.setImagePath(imageUpload(advertUpdateDto.getImagePath()));
 		}
 		advert.setDate(result.getDate());
+		advert.setAverageScore(result.getAverageScore());
 		advertRepository.save(advert);
 		return new SuccessResult("İş ilanı güncellendi");
 	}
@@ -189,13 +190,14 @@ public class AdvertManager implements AdvertService {
 			for (AdvertComment advertComment : result) {
 				totalScore += advertComment.getScore();
 			}
-			var newAdvert = result.get(0).getAdvert();
-			newAdvert.setAverageScore(totalScore / result.size());
-			Advert advert = modelMapper.map(newAdvert, Advert.class);
-			advert.setAverageScore(totalScore / result.size());
-			advertRepository.save(advert);
+			var advert = getById(advertId);
+			if (!advert.isSuccess()) {
+				return new ErrorResult(advert.getMessage());
+			}
+			advert.getData().setAverageScore(totalScore / result.size());
+			advertRepository.save(advert.getData());
+			freelancerService.updateAverageScore(advert.getData().getFreelancer());
 		}
-		freelancerService.updateAverageScore(result.get(0).getAdvert().getFreelancer());
 		return new SuccessResult("İş ilanının ortalama puanı güncellendi");
 	}
 
