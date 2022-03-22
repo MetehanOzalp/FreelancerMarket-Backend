@@ -42,6 +42,9 @@ public class Order {
 	@Column(name = "createdDate")
 	private LocalDate createdDate;
 
+	@Column(name = "price")
+	private Double price;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;

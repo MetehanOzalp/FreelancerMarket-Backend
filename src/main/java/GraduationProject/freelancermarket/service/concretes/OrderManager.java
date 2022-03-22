@@ -8,6 +8,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.core.business.BusinessRules;
+import GraduationProject.freelancermarket.entities.Advert;
 import GraduationProject.freelancermarket.entities.Order;
 import GraduationProject.freelancermarket.model.dto.OrderAddDto;
 import GraduationProject.freelancermarket.repository.OrderRepository;
@@ -34,8 +35,12 @@ public class OrderManager implements OrderService {
 
 	@Override
 	public Result add(OrderAddDto orderAddDto) {
+		var advert = advertService.getById(orderAddDto.getAdvertId());
+		if (!advert.isSuccess()) {
+			return new ErrorResult(advert.getMessage());
+		}
 		var result = BusinessRules.run(userIdAndTokenUserNameVerification(orderAddDto.getUserId()),
-				checkIfEnoughBalance(orderAddDto.getUserId(), orderAddDto.getAdvertId()));
+				checkIfEnoughBalance(orderAddDto.getUserId(), advert.getData()));
 		if (result != null) {
 			return new ErrorResult(result.getMessage());
 		}
@@ -43,8 +48,9 @@ public class OrderManager implements OrderService {
 		Order order = modelMapper.map(orderAddDto, Order.class);
 		order.setStatus(false);
 		order.setCreatedDate(LocalDate.now());
+		order.setPrice(advert.getData().getPrice());
 		orderRepository.save(order);
-		var withdraw = BusinessRules.run(moneyWithdraw(order.getUserId(), order.getAdvertId()));
+		var withdraw = BusinessRules.run(moneyWithdraw(order.getUserId(), advert.getData().getPrice()));
 		if (withdraw != null) {
 			return new ErrorResult(withdraw.getMessage());
 		}
@@ -61,7 +67,7 @@ public class OrderManager implements OrderService {
 			return new ErrorResult("Sipariş zaten onaylanmış");
 		}
 		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(order.getUserId()),
-				moneyDeposit(order.getAdvert().getFreelancerId(), order.getAdvert().getPrice()));
+				moneyDeposit(order.getAdvert().getFreelancerId(), order.getPrice()));
 		if (businessRules != null) {
 			return new ErrorResult(businessRules.getMessage());
 		}
@@ -73,7 +79,13 @@ public class OrderManager implements OrderService {
 	@Override
 	public DataResult<List<Order>> getByUserId(int userId) {
 		return new SuccessDataResult<List<Order>>(orderRepository.findByUserId(userId),
-				"İşverenin siparişleri listelendi");
+				"Kullanıcının siparişleri listelendi");
+	}
+
+	@Override
+	public DataResult<List<Order>> getByUserName(String userName) {
+		return new SuccessDataResult<List<Order>>(orderRepository.findByUser_UserName(userName),
+				"Kullanıcının siparişleri listelendi");
 	}
 
 	@Override
@@ -87,27 +99,19 @@ public class OrderManager implements OrderService {
 		return new SuccessDataResult<List<Order>>(orderRepository.findAll(), "Siparişler listelendi");
 	}
 
-	public Result checkIfEnoughBalance(int userId, int advertId) {
+	public Result checkIfEnoughBalance(int userId, Advert advert) {
 		var wallet = walletService.getByUserId(userId);
 		if (!wallet.isSuccess()) {
 			return new ErrorResult(wallet.getMessage());
 		}
-		var advert = advertService.getById(advertId);
-		if (!advert.isSuccess()) {
-			return new ErrorResult(wallet.getMessage());
-		}
-		if (wallet.getData().getBalance() < advert.getData().getPrice()) {
+		if (wallet.getData().getBalance() < advert.getPrice()) {
 			return new ErrorResult("Yetersiz bakiye");
 		}
 		return new SuccessResult();
 	}
 
-	public Result moneyWithdraw(int userId, int advertId) {
-		var advert = advertService.getById(advertId);
-		if (!advert.isSuccess()) {
-			return new ErrorResult(advert.getMessage());
-		}
-		var withdraw = walletService.moneyWithdraw(userId, advert.getData().getPrice());
+	public Result moneyWithdraw(int userId, Double price) {
+		var withdraw = walletService.moneyWithdraw(userId, price);
 		if (!withdraw.isSuccess()) {
 			return new ErrorResult(withdraw.getMessage());
 		}

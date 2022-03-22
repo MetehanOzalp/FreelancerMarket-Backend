@@ -30,7 +30,7 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping("add")
-	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> add(@RequestBody OrderAddDto orderAddDto) {
 		var result = orderService.add(orderAddDto);
 		if (!result.isSuccess()) {
@@ -40,7 +40,7 @@ public class OrderController {
 	}
 
 	@PostMapping("confirm")
-	@PreAuthorize("hasRole('ROLE_EMPLOYER')")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> confirm(@RequestParam int id) {
 		var result = orderService.confirm(id);
 		if (!result.isSuccess()) {
@@ -50,8 +50,17 @@ public class OrderController {
 	}
 
 	@GetMapping("getByUserId")
-	public ResponseEntity<?> getByEmployerId(@RequestParam int id) {
+	public ResponseEntity<?> getByUserId(@RequestParam int id) {
 		var result = orderService.getByUserId(id);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("getByUserName")
+	public ResponseEntity<?> getByUserName(@RequestParam String userName) {
+		var result = orderService.getByUserName(userName);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
