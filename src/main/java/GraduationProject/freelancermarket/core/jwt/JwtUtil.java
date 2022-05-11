@@ -16,7 +16,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtUtil {
 
-	private static final String SECRET_KEY = "my_super_secret_key";
+	static Map<String, String> environment = System.getenv();
+
+	private static final String SECRET_KEY = environment.get("SECRET_KEY");
 
 	private static final int TOKEN_VALIDITY = 3600 * 5;
 

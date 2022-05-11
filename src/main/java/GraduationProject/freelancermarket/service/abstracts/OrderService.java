@@ -19,6 +19,8 @@ public interface OrderService {
 
 	DataResult<List<Order>> getByFreelancerId(int freelancerId);
 
+	DataResult<List<Order>> getFreelancersOrdersByUserName(String userName);
+
 	DataResult<List<Order>> getAll();
 
 }

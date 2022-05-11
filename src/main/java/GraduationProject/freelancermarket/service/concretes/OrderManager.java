@@ -95,6 +95,12 @@ public class OrderManager implements OrderService {
 	}
 
 	@Override
+	public DataResult<List<Order>> getFreelancersOrdersByUserName(String userName) {
+		return new SuccessDataResult<List<Order>>(orderRepository.findByAdvert_Freelancer_UserName(userName),
+				"Freelancerların siparişleri listelendi");
+	}
+
+	@Override
 	public DataResult<List<Order>> getAll() {
 		return new SuccessDataResult<List<Order>>(orderRepository.findAll(), "Siparişler listelendi");
 	}

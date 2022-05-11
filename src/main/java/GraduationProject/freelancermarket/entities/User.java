@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "comments" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "comments","orders" })
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {

@@ -14,4 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 	List<Order> findByUser_UserName(String userName);
 
+	List<Order> findByAdvert_Freelancer_UserName(String userName);
+
 }

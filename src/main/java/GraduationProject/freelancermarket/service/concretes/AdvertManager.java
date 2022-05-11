@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -147,16 +148,17 @@ public class AdvertManager implements AdvertService {
 	@Override
 	public DataResult<List<Advert>> getByPageNumberAndFilter(int pageNumber, String subCategoryName,
 			AdvertFilter advertFilter) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, 10);
-		return new SuccessDataResult<List<Advert>>(
-				advertRepository.getByFilter(advertFilter, subCategoryName, pageable));
+		Pageable pageable = PageRequest.of(pageNumber - 1, 12);
+		Page<Advert> result = advertRepository.getByFilter(advertFilter, subCategoryName, pageable);
+		return new SuccessDataResult<List<Advert>>(result.getContent(), String.valueOf(result.getTotalElements()));
 	}
 
 	@Override
 	public DataResult<List<Advert>> getByPageNumberAndSearchFilter(int pageNumber,
 			AdvertSearchFilter advertSearchFilter) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, 10);
-		return new SuccessDataResult<List<Advert>>(advertRepository.getBySearchFilter(advertSearchFilter, pageable));
+		Pageable pageable = PageRequest.of(pageNumber - 1, 12);
+		Page<Advert> result = advertRepository.getBySearchFilter(advertSearchFilter, pageable);
+		return new SuccessDataResult<List<Advert>>(result.getContent(), String.valueOf(result.getTotalElements()));
 	}
 
 	@Override

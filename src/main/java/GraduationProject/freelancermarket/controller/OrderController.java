@@ -50,6 +50,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByUserId")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByUserId(@RequestParam int id) {
 		var result = orderService.getByUserId(id);
 		if (!result.isSuccess()) {
@@ -59,6 +60,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByUserName")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByUserName(@RequestParam String userName) {
 		var result = orderService.getByUserName(userName);
 		if (!result.isSuccess()) {
@@ -68,6 +70,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByFreelancerId")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByFreelancerId(@RequestParam int id) {
 		var result = orderService.getByFreelancerId(id);
 		if (!result.isSuccess()) {
@@ -76,7 +79,18 @@ public class OrderController {
 		return ResponseEntity.ok(result);
 	}
 
+	@GetMapping("getByFreelancerUserName")
+	//@PreAuthorize("hasRole('ROLE_FREELANCER')")
+	public ResponseEntity<?> getByFreelancerUserName(@RequestParam String userName) {
+		var result = orderService.getFreelancersOrdersByUserName(userName);
+		if (!result.isSuccess()) {
+			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok(result);
+	}
+
 	@GetMapping("getAll")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getAll() {
 		var result = orderService.getAll();
 		if (!result.isSuccess()) {

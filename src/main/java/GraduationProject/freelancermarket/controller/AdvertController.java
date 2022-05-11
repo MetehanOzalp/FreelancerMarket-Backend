@@ -112,9 +112,9 @@ public class AdvertController {
 	}
 
 	@PostMapping("getByFilter")
-	public ResponseEntity<?> getBySubCategoryNameFilter(@RequestParam int pageNumber,
-			@RequestParam String subCategoryName, @RequestBody AdvertFilter advertFilter) {
-		var result = advertService.getByPageNumberAndFilter(pageNumber, subCategoryName, advertFilter);
+	public ResponseEntity<?> getBySubCategoryNameFilter(@RequestParam String subCategoryName,
+			@RequestBody AdvertFilter advertFilter) {
+		var result = advertService.getByPageNumberAndFilter(advertFilter.getPage(), subCategoryName, advertFilter);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
@@ -122,9 +122,8 @@ public class AdvertController {
 	}
 
 	@PostMapping("getBySearchFilter")
-	public ResponseEntity<?> getBySearchFilter(@RequestParam int pageNumber,
-			@RequestBody AdvertSearchFilter advertSearchFilter) {
-		var result = advertService.getByPageNumberAndSearchFilter(pageNumber, advertSearchFilter);
+	public ResponseEntity<?> getBySearchFilter(@RequestBody AdvertSearchFilter advertSearchFilter) {
+		var result = advertService.getByPageNumberAndSearchFilter(advertSearchFilter.getPage(), advertSearchFilter);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}
