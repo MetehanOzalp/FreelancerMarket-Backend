@@ -156,8 +156,13 @@ public class AdvertManager implements AdvertService {
 	@Override
 	public DataResult<List<Advert>> getByPageNumberAndSearchFilter(int pageNumber,
 			AdvertSearchFilter advertSearchFilter) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, 12);
-		Page<Advert> result = advertRepository.getBySearchFilter(advertSearchFilter, pageable);
+		Page<Advert> result;
+		if (pageNumber != 0) {
+			Pageable pageable = PageRequest.of(pageNumber - 1, 12);
+			result = advertRepository.getBySearchFilter(advertSearchFilter, pageable);
+		} else {
+			result = advertRepository.getBySearchFilter(advertSearchFilter, null);
+		}
 		return new SuccessDataResult<List<Advert>>(result.getContent(), String.valueOf(result.getTotalElements()));
 	}
 

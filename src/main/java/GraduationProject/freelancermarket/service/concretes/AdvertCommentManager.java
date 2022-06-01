@@ -16,6 +16,7 @@ import GraduationProject.freelancermarket.service.abstracts.AdvertCommentService
 import GraduationProject.freelancermarket.service.abstracts.AdvertService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.utils.DataResult;
+import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
 import GraduationProject.freelancermarket.utils.Result;
 import GraduationProject.freelancermarket.utils.SuccessDataResult;
@@ -60,6 +61,15 @@ public class AdvertCommentManager implements AdvertCommentService {
 		advertCommentRepository.deleteById(id);
 		advertService.updateScore(advertComment.getAdvertId());
 		return new SuccessResult("Yorum silindi");
+	}
+
+	@Override
+	public DataResult<AdvertComment> getById(int id) {
+		var result = advertCommentRepository.findById(id).orElse(null);
+		if (result == null) {
+			return new ErrorDataResult<AdvertComment>("Yorum bulunamadı");
+		}
+		return new SuccessDataResult<AdvertComment>(result);
 	}
 
 	@Override

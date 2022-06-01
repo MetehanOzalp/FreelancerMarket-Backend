@@ -9,7 +9,7 @@ import GraduationProject.freelancermarket.utils.Result;
 
 public interface SkillService {
 
-	Result add(SkillAddDto skillAddDto);
+	DataResult<Skill> add(SkillAddDto skillAddDto);
 
 	Result delete(int id);
 

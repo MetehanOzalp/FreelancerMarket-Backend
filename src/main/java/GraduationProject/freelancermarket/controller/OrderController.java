@@ -60,7 +60,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByUserName")
-	//@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
+	@PreAuthorize("hasRole('ROLE_EMPLOYER')" + "|| hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByUserName(@RequestParam String userName) {
 		var result = orderService.getByUserName(userName);
 		if (!result.isSuccess()) {
@@ -70,7 +70,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByFreelancerId")
-	@PreAuthorize("hasRole('ROLE_FREELANCER')")
+	// @PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByFreelancerId(@RequestParam int id) {
 		var result = orderService.getByFreelancerId(id);
 		if (!result.isSuccess()) {
@@ -80,7 +80,7 @@ public class OrderController {
 	}
 
 	@GetMapping("getByFreelancerUserName")
-	//@PreAuthorize("hasRole('ROLE_FREELANCER')")
+	@PreAuthorize("hasRole('ROLE_FREELANCER')")
 	public ResponseEntity<?> getByFreelancerUserName(@RequestParam String userName) {
 		var result = orderService.getFreelancersOrdersByUserName(userName);
 		if (!result.isSuccess()) {

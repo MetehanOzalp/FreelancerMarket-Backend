@@ -1,12 +1,9 @@
 package GraduationProject.freelancermarket.entities;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
@@ -20,24 +17,18 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "advert_comments")
+@Table(name = "advert_comment_responses")
 @PrimaryKeyJoinColumn(name = "comment_id")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "advert" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "advertComment" })
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdvertComment extends Comment {
+public class AdvertCommentResponse extends Comment {
 
-	@Column(name = "advert_id")
-	private int advertId;
-
-	@Column(name = "score")
-	private Double score;
+	@Column(name = "advert_comment_id")
+	private int advertCommentId;
 
 	@ManyToOne
-	@JoinColumn(name = "advert_id", insertable = false, updatable = false)
-	private Advert advert;
-
-	@OneToMany(mappedBy = "advertComment")
-	private List<AdvertCommentResponse> advertCommentResponses;
+	@JoinColumn(name = "advert_comment_id", insertable = false, updatable = false)
+	private AdvertComment advertComment;
 
 }

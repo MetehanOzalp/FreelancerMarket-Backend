@@ -42,8 +42,8 @@ public class AdvertCommentController {
 	}
 
 	@GetMapping("getByAdvertId")
-	public ResponseEntity<?> getByAdvertId(@RequestParam int advertCommentId) {
-		var result = advertCommentService.getByAdvertId(advertCommentId);
+	public ResponseEntity<?> getByAdvertId(@RequestParam int advertId) {
+		var result = advertCommentService.getByAdvertId(advertId);
 		if (!result.isSuccess()) {
 			return new ResponseEntity<Object>(result, HttpStatus.BAD_REQUEST);
 		}

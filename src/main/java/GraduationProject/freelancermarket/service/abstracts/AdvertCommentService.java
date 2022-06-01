@@ -13,6 +13,8 @@ public interface AdvertCommentService {
 
 	Result delete(int id);
 
+	DataResult<AdvertComment> getById(int id);
+
 	DataResult<List<AdvertComment>> getByAdvertId(int advertId);
 
 	DataResult<List<AdvertComment>> getByFreelancerId(int freelancerId);

@@ -12,6 +12,7 @@ import GraduationProject.freelancermarket.repository.SkillRepository;
 import GraduationProject.freelancermarket.service.abstracts.SkillService;
 import GraduationProject.freelancermarket.service.abstracts.TokenUserNameAndIdValidationService;
 import GraduationProject.freelancermarket.utils.DataResult;
+import GraduationProject.freelancermarket.utils.ErrorDataResult;
 import GraduationProject.freelancermarket.utils.ErrorResult;
 import GraduationProject.freelancermarket.utils.Result;
 import GraduationProject.freelancermarket.utils.SuccessDataResult;
@@ -27,14 +28,14 @@ public class SkillManager implements SkillService {
 	private final ModelMapper modelMapper;
 
 	@Override
-	public Result add(SkillAddDto skillAddDto) {
+	public DataResult<Skill> add(SkillAddDto skillAddDto) {
 		var businessRules = BusinessRules.run(userIdAndTokenUserNameVerification(skillAddDto.getFreelancerId()));
 		if (businessRules != null) {
-			return new ErrorResult(businessRules.getMessage());
+			return new ErrorDataResult<Skill>(businessRules.getMessage());
 		}
 		Skill skill = modelMapper.map(skillAddDto, Skill.class);
-		skillRepository.save(skill);
-		return new SuccessResult("Yetenek eklendi");
+		var result = skillRepository.save(skill);
+		return new SuccessDataResult<Skill>(result, "Yetenek eklendi");
 	}
 
 	@Override
