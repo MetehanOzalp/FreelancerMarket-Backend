@@ -1,5 +1,9 @@
 package GraduationProject.freelancermarket.service.concretes;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import GraduationProject.freelancermarket.entities.User;
@@ -41,6 +45,27 @@ public class UserManager implements UserService {
 			return new ErrorDataResult<User>("Kullanıcı bulunamadı");
 		}
 		return new SuccessDataResult<User>(user);
+	}
+
+	@Override
+	public DataResult<HashMap<String, String>> getUserImages(List<String> userNames) {
+		var users = userRepository.findByUserNameIn(userNames);
+		if (users.size() == 0) {
+			return new ErrorDataResult<HashMap<String, String>>("Kullanıcılar bulunamadı");
+		}
+		HashMap<String, String> images = new HashMap<String, String>();
+		for (User user : users) {
+			try {
+				Field field = user.getClass().getDeclaredField("imagePath");
+				field.setAccessible(true);
+				images.put(user.getUserName(), field.get(user).toString());
+			} catch (IllegalAccessException ex) {
+				throw new RuntimeException(ex);
+			} catch (NoSuchFieldException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		return new SuccessDataResult<HashMap<String, String>>(images);
 	}
 
 }
